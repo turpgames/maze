@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<game
+    id="Ichigu"
+    class="com.turpgames.maze.view.MazeGame"
+    version="1.1.0" >
+
+    <params>
+
+        <param
+            key="provider"
+            value="com.turpgames.framework.v0.impl.libgdx.GdxGameProvider" />
+
+        <param
+            key="settings-key"
+            value="com.turpgames.maze" />
+
+        <param
+            key="virtual-width"
+            value="550" />
+
+        <param
+            key="virtual-height"
+            value="800" />
+
+        <param
+            key="default-font"
+            value="Akachen_chinese,1" />
+
+        <param
+            key="default-skin"
+            value="ppt" />
+
+        <param
+            key="default-screen"
+            value="test" />
+
+        <param
+            key="screen-switcher"
+            value="sliding,0.30" />
+
+        <param
+            key="form-switcher"
+            value="sliding,0.30" />
+
+        <param
+            key="tutorial-page-switcher"
+            value="sliding,0.25" />
+
+        <param
+            key="allow-exit-on-back"
+            value="true" />
+
+        <param
+            key="turp-address"
+            value="http://www.turpgames.com" />
+
+        <param
+            key="libgdx-address"
+            value="http://libgdx.badlogicgames.com" />
+
+        <param
+            key="play-store-address"
+            value="https://play.google.com/store/apps/details?id=com.turpgames.maze" />
+
+        <param
+            key="app-store-address-ios7"
+            value="itms-apps://itunes.apple.com/app/id737312134" />
+
+        <param
+            key="app-store-address-old"
+            value="itms-apps://itunes.apple.com/WebObjects/MZStore.woa/wa/viewContentsUserReviews?type=Purple+Software&amp;id=737312134" />
+    </params>
+
+    <screens>
+
+        <screen
+            id="test"
+            class="com.turpgames.maze.view.TestScreen" />
+        
+    </screens>
+    
+    <forms>
+        
+    </forms>
+    
+    <animations>
+        
+    </animations>
+    
+    <languages>
+        
+    </languages>
+    
+    <resources>
+        <fonts>
+            <font
+                id="Akachen_chinese"
+                path="fonts/akachen_chinese.fnt" />
+        </fonts>
+
+        <textures>
+            
+            <texture
+                id="trap"
+                path="maze/obj/trap.png" />
+            
+            <texture
+                id="block"
+                path="maze/obj/body_full40-2.png" />
+            
+            
+            <texture
+                id="rotationSignTemp"
+                path="maze/obj/temp.png" />
+            
+            <texture
+                id="rotationSignLeft"
+                path="maze/obj/left.png" />
+            
+            <texture
+                id="rotationSignRight"
+                path="maze/obj/right.png" />
+
+        </textures>
+
+        <sounds>
+        </sounds>
+    </resources>
+
+    <skins>
+
+        <skin id="ppt" >
+
+            <form
+                cols="16"
+                rows="32" />
+
+            <button
+                cols="8"
+                focus-color="#3974b1ff"
+                font-scale="1.2"
+                halign="center"
+                rows="2"
+                vibrate="50"
+                x="4" />
+
+            <label
+                halign="center"
+                rows="2"
+                color="#fff" />
+        </skin>
+    </skins>
+
+</game>
