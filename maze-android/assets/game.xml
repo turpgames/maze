@@ -88,24 +88,24 @@
             id="fell_on_trap"
             texture="fell_on_trap"
             duration="0.15f"
-            width="64"
-            height="64"
+            width="40"
+            height="40"
             looping="false" />
         
         <animation
             id="fell_on_objective"
             texture="fell_on_objective"
             duration="0.1f"
-            width="64"
-            height="64"
+            width="40"
+            height="40"
             looping="false" />
         
         <animation
             id="fell_on_portal"
             texture="fell_on_portal"
             duration="0.15f"
-            width="64"
-            height="64"
+            width="40"
+            height="40"
             looping="false" />
         
     </animations>
@@ -130,7 +130,7 @@
                 id="fell_on_objective"
                 path="maze/fell_on_objective.png" />
             <texture
-                id="fell_on_trap"
+                id="fell_on_portal"
                 path="maze/fell_on_portal.png" />
             <texture
                 id="lokum"
@@ -141,7 +141,11 @@
                 path="maze/trap.png" />
             
             <texture
-                id="block"
+                id="objective"
+                path="maze/door.gif" />
+            
+            <texture
+                id="wall"
                 path="maze/body_full40-2.png" />
             
             

@@ -3,13 +3,15 @@ package com.turpgames.maze.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.turpgames.framework.v0.impl.AnimatedGameObject;
+import com.turpgames.framework.v0.util.CollisionGroup;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.framework.v0.util.Utils;
 import com.turpgames.maze.display.RotationSign;
 import com.turpgames.maze.utils.R;
 
 /***
- * Wrapper class for game objects in the Maze; {@link Block}s, {@link Trap}s,
+ * Wrapper class for game objects in the Maze; {@link Wall}s, {@link Trap}s,
  * {@link Portal}s, and the {@link Objective}(s).
  * 
  * @author kadirello
@@ -18,7 +20,7 @@ import com.turpgames.maze.utils.R;
 public class Level extends MazeGameObject {
 
 	private static enum DataType {
-		EMPTY, BLOCK, TRAP, OBJECTIVE
+		EMPTY, WALL, TRAP, OBJECTIVE
 	}; // make BlockType and collect all in one class?
 
 	public static final int blockWidth = 40;
@@ -28,15 +30,17 @@ public class Level extends MazeGameObject {
 	public float tx;
 	public float ty;
 
-	private List<Block> blocks;
-//	private List<ICollidable> traps;
-//	private List<ICollidable> objectives;
-//	private List<ICollidable> portalDoors;
+	private List<BlockObject> blocks;
+	private Lokum lokum;
 
 	private IMazeLevelListener listener;
 	
 	private RotationSign rotationSign;
-	
+
+	private CollisionGroup lokumToBlocks;
+	private List<CollisionGroup> collisionGroups;
+
+	List<AnimatedGameObject> animatedObjects;
 	public Level(IMazeLevelListener listener) {
 		this.listener = listener;
 		
@@ -59,35 +63,39 @@ public class Level extends MazeGameObject {
 		rotationSign = new RotationSign((Game.getVirtualWidth() - R.ui.rotationSignWidth) / 2, 
 				ty + mazeWidth + R.ui.rotationSignWidth / 2);
 		
-		blocks = new ArrayList<Block>();
-//		traps = new ArrayList<ICollidable>();
-//		objectives = new ArrayList<ICollidable>();
-//		portalDoors = new ArrayList<ICollidable>();
+		blocks = new ArrayList<BlockObject>();
 		for (int i = 0; i < cols; i++) {
 			for (int j = 0; j < rows; j++) {
-				if (data[i][j] == DataType.BLOCK.ordinal()) {
-					Block block = new Block(tx + i * blockWidth, ty + j * blockHeight);
+				if (data[i][j] == DataType.WALL.ordinal()) {
+					Wall block = new Wall(tx + i * blockWidth, ty + j * blockHeight);
 					block.anchorRotation(getRotation());
 					
 					blocks.add(block);
 				} else if (data[i][j] == DataType.TRAP.ordinal()) {
-//					Trap trap = new Trap(tx + i * blockWidth, ty + j * blockHeight);
-//					trap.setRotation(rotation);
-//
-//					screen.registerDrawable(trap, 2);
-//
-//					traps.add(trap);
+					Trap trap = new Trap(tx + i * blockWidth, ty + j * blockHeight);
+					trap.anchorRotation(getRotation());
+
+					blocks.add(trap);
 				} else if (data[i][j] == DataType.OBJECTIVE.ordinal()) {
-//					Objective objective = new Objective(tx + i * blockWidth, ty + j * blockHeight);
-//					objective.setRotation(rotation);
-//
-//					screen.registerDrawable(objective, 2);
-//
-//					objectives.add(objective);
+					Objective objective = new Objective(tx + i * blockWidth, ty + j * blockHeight);
+					objective.anchorRotation(getRotation());
+
+					blocks.add(objective);
 				}
 			}
 		}
-
+		
+		lokum = new Lokum(this, 1, 1);
+//		List<ICollidable> l = new ArrayList<ICollidable>(blocks);
+		
+		lokumToBlocks = new CollisionGroup(lokum, (List)blocks);
+		
+		collisionGroups = new ArrayList<CollisionGroup>();
+		collisionGroups.add(lokumToBlocks);
+		
+		
+		animatedObjects = new ArrayList<AnimatedGameObject>();
+		animatedObjects.add(lokum);
 //		for (int i = 0; i < portalData.length; i++) {
 //			float blueX = tx + portalData[i][0][0] * Mazeda.blockWidth;
 //			float blueY = ty + portalData[i][0][1] * Mazeda.blockHeight;
@@ -99,11 +107,20 @@ public class Level extends MazeGameObject {
 //			portalDoors.addAll(portal.getDoors());
 //		}
 	}
+	
+	public List<CollisionGroup> getCollisionGroups() {
+		return collisionGroups;
+	}
+	
+	public List<AnimatedGameObject> getAnimatedObjects() {
+		return animatedObjects;
+	}
 
 	@Override
 	public void draw() {
-		for(Block block : blocks)
+		for(BlockObject block : blocks)
 			block.draw();
+		lokum.draw();
 		rotationSign.draw();
 	}
 
@@ -111,34 +128,19 @@ public class Level extends MazeGameObject {
 	public void registerSelf() {
 		Game.getInputManager().register(this, Utils.LAYER_GAME);
 	}
-	
-	public List<Block> getBlocks() {
-		return blocks;
-	}
-
-//	public List<ICollidable> getTraps() {
-//		return traps;
-//	}
-//
-//	public List<ICollidable> getObjectives() {
-//		return objectives;
-//	}
-//
-//	public List<ICollidable> getPortals() {
-//		return portalDoors;
-//	}
 
 	/***
 	 * Resets {@link Level} to its starting state.
 	 */
 	public void reset() {
 		getRotation().angle.z = 0;
+		lokum.reset();
 	}
 
 	public void setSignRotation(int rotation) {
 		rotationSign.direction = rotation;
 	}
-
+	
 	/***
 	 * Signals the {@link Portal} of the given {@link PortalDoor} to start
 	 * portal animations.

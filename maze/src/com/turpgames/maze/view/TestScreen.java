@@ -2,10 +2,10 @@ package com.turpgames.maze.view;
 
 import com.turpgames.framework.v0.IResourceManager;
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.maze.controller.MazeController;
+import com.turpgames.maze.controller.Controller;
 
 public class TestScreen extends MazeScreen {
-	MazeController controller;
+	Controller controller;
 	
 	@Override
 	public void init() {
@@ -14,7 +14,7 @@ public class TestScreen extends MazeScreen {
 		
 		while(resourceManager.isLoading()) {}
 		
-		controller = new MazeController(this);
+		controller = new Controller(this);
 		setScreenListener(controller);
 	}
 	

@@ -35,7 +35,8 @@ public final class R {
 		public static final class textures {
 
 			public static final String trap = "trap";
-			public static final String block = "block";
+			public static final String wall = "wall";
+			public static final String objective = "objective";
 			
 			public static String rotationSignTemp = "rotationSignTemp";
 			public static String rotationSignLeft = "rotationSignLeft";

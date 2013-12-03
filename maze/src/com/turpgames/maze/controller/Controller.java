@@ -1,13 +1,17 @@
 package com.turpgames.maze.controller;
 
+import java.util.List;
+
+import com.turpgames.framework.v0.impl.AnimatedGameObject;
+import com.turpgames.framework.v0.util.CollisionGroup;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.framework.v0.util.Utils;
 import com.turpgames.maze.controller.base.AbstractController;
 import com.turpgames.maze.model.Level;
 import com.turpgames.maze.view.MazeScreen;
 
-public class MazeController extends AbstractController {
-	protected MazeState currentState;
+public class Controller extends AbstractController {
+	protected State currentState;
 	
 	protected Level model;
 	protected MazeScreen view;
@@ -28,30 +32,56 @@ public class MazeController extends AbstractController {
 	private float epsilon = 0.1f;
 	
 	// FSM States implementing IState
-	private MazeWaitingState waiting;
-	private MazeUserRotatingState userRotating;
-	private MazeMazeRotatingState mazeRotating;
+	private WaitingState waiting;
+	private UserRotatingState userRotating;
+	private MazeRotatingState mazeRotating;
+	private FallingState falling;
+	private LokumOnObjectiveState lokumOnObjective;
+	private LokumOnTrapState lokumOnTrap;
 	
-	public MazeController(MazeScreen screen) {
+	List<CollisionGroup> collisionGroups;
+	List<AnimatedGameObject> animatedObjects;
+	public Controller(MazeScreen screen) {
 		this.view = screen;
 		this.model = new Level(this);
-		waiting = new MazeWaitingState(this);
-		userRotating = new MazeUserRotatingState(this);
-		mazeRotating = new MazeMazeRotatingState(this);
+		
+		this.collisionGroups = model.getCollisionGroups();
+		for (CollisionGroup g : collisionGroups) {
+			view.registerCollisionGroup(g);
+		}
+		
+		this.animatedObjects = model.getAnimatedObjects();
+		
+		waiting = new WaitingState(this);
+		userRotating = new UserRotatingState(this);
+		mazeRotating = new MazeRotatingState(this);
+		falling = new FallingState(this);
+		lokumOnObjective = new LokumOnObjectiveState(this);
+		lokumOnTrap = new LokumOnTrapState(this);
 		
 		Game.getInputManager().register(this, Utils.LAYER_GAME);
 		// State machine is started on 'waiting' state.
 		setCurrentState(waiting);
 	}
 	
-	private void setCurrentState(MazeState s) {
+	private void setCurrentState(State s) {
+		if (currentState != null) {
+			for (CollisionGroup g : collisionGroups)
+				g.unregisterCollisionListener(currentState);
+			for (AnimatedGameObject obj : animatedObjects)
+				obj.unregisterAnimationEndListener(currentState);
+		}
 		currentState = s;
+		for (CollisionGroup g : collisionGroups)
+			g.registerCollisionListener(s);
+		for (AnimatedGameObject obj : animatedObjects)
+			obj.registerAnimationEndListener(s);
 	}
 	
 	/***
-	 * Called by {@link com.blox.maze.controller.MazeController#waiting waiting}
+	 * Called by {@link com.Controller.maze.controller.MazeController#waiting waiting}
 	 * state to signal start of user input. Old rotation value is recorded. The
-	 * next state ({@link com.blox.maze.controller.MazeController#userRotating
+	 * next state ({@link com.Controller.maze.controller.MazeController#userRotating
 	 * userRotating}) is started after the input start coordinates are sent to
 	 * it.
 	 * 
@@ -65,7 +95,7 @@ public class MazeController extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.blox.maze.controller.MazeController#userRotating
+	 * Called by {@link com.Controller.maze.controller.MazeController#userRotating
 	 * userRotating} state to update the rotation of the maze while user input
 	 * is still being received (Slide is not finished).
 	 * 
@@ -76,10 +106,10 @@ public class MazeController extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.blox.maze.controller.MazeController#userRotating
+	 * Called by {@link com.Controller.maze.controller.MazeController#userRotating
 	 * userRotating} state to signal end of user input abortion. Maze rotation
 	 * is restored to its old value and FSM is moved back to
-	 * {@link com.blox.maze.controller.MazeController#waiting waiting} state.
+	 * {@link com.Controller.maze.controller.MazeController#waiting waiting} state.
 	 */
 	public void userAbortRotation() {
 		model.getRotation().angle.z = mazeOldRotation;
@@ -87,10 +117,10 @@ public class MazeController extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.blox.maze.controller.MazeController#userRotating
+	 * Called by {@link com.Controller.maze.controller.MazeController#userRotating
 	 * userRotating} state when user input ends. Needed rotation angle to
 	 * complete user rotation to 90 degrees is calculated. FSM is moved to the
-	 * next state, {@link com.blox.maze.controller.MazeController#mazeRotating
+	 * next state, {@link com.Controller.maze.controller.MazeController#mazeRotating
 	 * mazeRotating}.
 	 * 
 	 * @param userRotation
@@ -103,7 +133,7 @@ public class MazeController extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.blox.maze.controller.MazeController#mazeRotating
+	 * Called by {@link com.Controller.maze.controller.MazeController#mazeRotating
 	 * mazeRotating} state on each update cycle to rotate the maze till 90
 	 * degrees of rotation is reached. Upon reaching, MazeMover is informed
 	 * about new rotation.
@@ -118,7 +148,7 @@ public class MazeController extends AbstractController {
 			model.getRotation().angle.z = (mazeOldRotation + userRotation * 90);
 			MazeMover.instance.turn(userRotation == 1);
 
-			setCurrentState(waiting);
+			setCurrentState(falling);
 		}
 	}
 
@@ -145,6 +175,41 @@ public class MazeController extends AbstractController {
 	@Override
 	public void work() {
 		currentState.work();
+	}
+
+	public void lokumOnWall() {
+		setCurrentState(waiting);
+	}
+
+	public void lokumOnTrap() {
+		setCurrentState(lokumOnTrap);
+	}
+
+	public void lokumOnObjective() {
+		setCurrentState(lokumOnObjective);
+	}
+	
+
+	/***
+	 * Called by
+	 * {@link com.blox.maze.controller.MazeController#lokumOnObjective
+	 * lokumOnObjective} state (when animation ends) to move on to the next map.
+	 * TODO Currently only calls
+	 * {@link com.blox.maze.controller.MazeController#resetMap resetMap}.
+	 */
+	public void finishMap() {
+		// TODO Get next map falan
+		resetMap();
+	}
+	/***
+	 * Called by {@link com.blox.maze.controller.MazeController#lokumOnTrap
+	 * lokumOnTrap} state (when animation ends) to restart the current map.
+	 */
+	public void resetMap() {
+		// TODO: reset map and lokum
+		MazeMover.instance.resetRotation();
+		model.reset();
+		setCurrentState(waiting);
 	}
 }
 	

@@ -1,15 +1,19 @@
 package com.turpgames.maze.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.turpgames.framework.v0.IBound;
 import com.turpgames.framework.v0.ICollidable;
-import com.turpgames.framework.v0.impl.AnimatedGameObject;
 import com.turpgames.framework.v0.impl.RectangleBound;
 import com.turpgames.framework.v0.util.Vector;
+import com.turpgames.maze.controller.MazeMover;
 import com.turpgames.maze.utils.Maze;
 import com.turpgames.maze.utils.R;
 
-public class Lokum extends AnimatedGameObject {
+public class Lokum extends MazeAnimatedGameObject {
 	private Vector startLocation;
+	private List<ICollidable> collidedObjects;
 
 	public Lokum(Level maze, float x, float y) {
 		this.startLocation = new Vector();
@@ -25,7 +29,11 @@ public class Lokum extends AnimatedGameObject {
 		addBound(new RectangleBound(this, new Vector(0, 0), Level.blockWidth, Level.blockHeight));
 		addAnimation(R.game.animations.fellOnTrap);
 		addAnimation(R.game.animations.fellOnObjective);
-		addAnimation(R.game.animations.fellOnPortal);
+		
+		MazeMover.instance.register(this);
+		anchorRotation(maze.getRotation());
+		
+		collidedObjects = new ArrayList<ICollidable>();
 	}
 	
 	@Override
@@ -60,6 +68,28 @@ public class Lokum extends AnimatedGameObject {
 		else if (a.x > 0)
 			l.x = thatBound.getLocation().x - ((RectangleBound) thatBound).getWidth() + thisBound.getInvOffset().x;
 	}
+	
+	@Override
+	public void onCollide(ICollidable thatObj, IBound thisBound,
+			IBound thatBound) {
+		if (collidedObjects.contains(thatObj))
+			return;
+		if (thatObj instanceof Wall) {
+			fellOnBlock(thisBound, thatBound, thatObj);
+			stopLokum();
+		} else if (thatObj instanceof Trap) {
+			fellOnTrap();
+		} else if (thatObj instanceof Objective) {
+			fellOnObjective();
+		}
+		collidedObjects.add(thatObj);
+	}
+	
+	@Override
+	public void onNotcollide(ICollidable thatObj, IBound thisBound,
+			IBound thatBound) {
+		collidedObjects.remove(thatObj);
+	}
 
 	public void stopLokum() {
 		getAcceleration().set(0);
@@ -69,10 +99,6 @@ public class Lokum extends AnimatedGameObject {
 
 	public void fellOnTrap() {
 		startAnimation(R.game.animations.fellOnTrap);
-	}
-
-	public void fellOnPortal() {
-		startAnimation(R.game.animations.fellOnPortal);
 	}
 
 	public void fellOnObjective() {
@@ -92,7 +118,7 @@ public class Lokum extends AnimatedGameObject {
 	 * {@link com.blox.framework.v0.ICollidable ICollidable} object.
 	 * 
 	 * @param obj
-	 * @see {@link com.blox.maze.controller.MazeController#portalFinished()
+	 * @see {@link com.Controller.maze.controller.MazeController#portalFinished()
 	 *      portalFinished()}
 	 */
 	public void teleport(ICollidable obj) {

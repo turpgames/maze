@@ -52,6 +52,7 @@ public class MazeMover extends DefaultMover {
 
 		for (IMovable obj : list) {
 			obj.getAcceleration().set(gravities.get(currState));
+			obj.beginMove(this);
 		}
 	}
 

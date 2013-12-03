@@ -1,14 +1,14 @@
 package com.turpgames.maze.controller;
 
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.maze.controller.MazeController;
+import com.turpgames.maze.controller.Controller;
 import com.turpgames.maze.utils.Maze;
 
-public class MazeUserRotatingState extends MazeState {
+public class UserRotatingState extends State {
 	private final static float maxTemp = 35;
 	private final static float minTemp = 15;
 
-	public MazeUserRotatingState(MazeController parent) {
+	public UserRotatingState(Controller parent) {
 		super(parent);
 		
 	}

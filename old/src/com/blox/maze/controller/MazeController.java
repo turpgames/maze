@@ -10,6 +10,9 @@ import com.turpgames.framework.v0.ICollisionListener;
 import com.turpgames.framework.v0.IState;
 import com.turpgames.framework.v0.impl.StateManager;
 import com.turpgames.framework.v0.util.CollisionGroup;
+import com.turpgames.maze.controller.MazeLokumFallingState;
+import com.turpgames.maze.controller.MazeLokumOnObjectiveState;
+import com.turpgames.maze.controller.MazeLokumOnTrapState;
 import com.turpgames.maze.controller.MazeMazeRotatingState;
 import com.turpgames.maze.controller.MazeMover;
 import com.turpgames.maze.controller.MazeUserRotatingState;
@@ -271,7 +274,7 @@ public class MazeController extends StateManager {
 	/***
 	 * Called by {@link com.blox.maze.controller.MazeController#lokumFalling
 	 * lokumFalling} state when {@link com.turpgames.maze.model.Lokum Lokum} lands on
-	 * a {@link com.blox.maze.model.Trap Trap}. FSM is advanced to
+	 * a {@link com.turpgames.maze.model.Trap Trap}. FSM is advanced to
 	 * {@link com.blox.maze.controller.MazeController#lokumOnTrap lokumOnTrap}.
 	 * 
 	 * @param thisBound
@@ -286,7 +289,7 @@ public class MazeController extends StateManager {
 	/***
 	 * Called by {@link com.blox.maze.controller.MazeController#lokumFalling
 	 * lokumFalling} state when {@link com.turpgames.maze.model.Lokum Lokum} lands on
-	 * an {@link com.blox.maze.model.Objective Objective}. FSM is advanced to
+	 * an {@link com.turpgames.maze.model.Objective Objective}. FSM is advanced to
 	 * {@link com.blox.maze.controller.MazeController#lokumOnObjective
 	 * lokumOnObjective}.
 	 * 
@@ -332,8 +335,8 @@ public class MazeController extends StateManager {
 	 * {@link com.blox.maze.controller.MazeController#lokumOnTrap lokumOnTrap}
 	 * and {@link com.blox.maze.controller.MazeController#lokumOnObjective
 	 * lokumOnObjective} <b>AFTER</b> {@link com.turpgames.maze.model.Lokum Lokum}
-	 * lands on a {@link com.blox.maze.model.Trap Trap} or an
-	 * {@link com.blox.maze.model.Objective Objective} <b>to handle consequent
+	 * lands on a {@link com.turpgames.maze.model.Trap Trap} or an
+	 * {@link com.turpgames.maze.model.Objective Objective} <b>to handle consequent
 	 * collisions with {@link com.turpgames.maze.model.bloc.maze.model.Block Block}s</b>
 	 * 
 	 * @param thisBound

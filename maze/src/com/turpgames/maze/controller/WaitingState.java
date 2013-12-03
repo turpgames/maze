@@ -1,9 +1,9 @@
 package com.turpgames.maze.controller;
 
-import com.turpgames.maze.controller.MazeController;
+import com.turpgames.maze.controller.Controller;
 
-public class MazeWaitingState extends MazeState {
-	public MazeWaitingState(MazeController parent) {
+public class WaitingState extends State {
+	public WaitingState(Controller parent) {
 		super(parent);
 	}
 
