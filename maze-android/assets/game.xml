@@ -84,6 +84,29 @@
     </forms>
     
     <animations>
+        <animation
+            id="fell_on_trap"
+            texture="fell_on_trap"
+            duration="0.15f"
+            width="64"
+            height="64"
+            looping="false" />
+        
+        <animation
+            id="fell_on_objective"
+            texture="fell_on_objective"
+            duration="0.1f"
+            width="64"
+            height="64"
+            looping="false" />
+        
+        <animation
+            id="fell_on_portal"
+            texture="fell_on_portal"
+            duration="0.15f"
+            width="64"
+            height="64"
+            looping="false" />
         
     </animations>
     
@@ -101,25 +124,38 @@
         <textures>
             
             <texture
+                id="fell_on_trap"
+                path="maze/fell_on_trap.png" />
+            <texture
+                id="fell_on_objective"
+                path="maze/fell_on_objective.png" />
+            <texture
+                id="fell_on_trap"
+                path="maze/fell_on_portal.png" />
+            <texture
+                id="lokum"
+                path="maze/lokum.png" />
+            
+            <texture
                 id="trap"
-                path="maze/obj/trap.png" />
+                path="maze/trap.png" />
             
             <texture
                 id="block"
-                path="maze/obj/body_full40-2.png" />
+                path="maze/body_full40-2.png" />
             
             
             <texture
                 id="rotationSignTemp"
-                path="maze/obj/temp.png" />
+                path="maze/temp.png" />
             
             <texture
                 id="rotationSignLeft"
-                path="maze/obj/left.png" />
+                path="maze/left.png" />
             
             <texture
                 id="rotationSignRight"
-                path="maze/obj/right.png" />
+                path="maze/right.png" />
 
         </textures>
 

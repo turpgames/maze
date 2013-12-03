@@ -3,7 +3,6 @@ package com.blox.maze.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.blox.maze.model.Lokum;
 import com.blox.maze.model.PortalDoor;
 import com.turpgames.framework.v0.IBound;
 import com.turpgames.framework.v0.ICollidable;
@@ -16,6 +15,7 @@ import com.turpgames.maze.controller.MazeMover;
 import com.turpgames.maze.controller.MazeUserRotatingState;
 import com.turpgames.maze.controller.MazeWaitingState;
 import com.turpgames.maze.model.Level;
+import com.turpgames.maze.model.Lokum;
 import com.turpgames.maze.view.MazeScreen;
 
 public class MazeController extends StateManager {
@@ -254,7 +254,7 @@ public class MazeController extends StateManager {
 
 	/***
 	 * Called by {@link com.blox.maze.controller.MazeController#lokumFalling
-	 * lokumFalling} state when {@link com.blox.maze.model.Lokum Lokum} lands on
+	 * lokumFalling} state when {@link com.turpgames.maze.model.Lokum Lokum} lands on
 	 * a {@link com.turpgames.maze.model.Block Block}. Lokum is stopped and FSM is
 	 * advanced to {@link com.blox.maze.controller.MazeController#waiting
 	 * waiting}.
@@ -270,7 +270,7 @@ public class MazeController extends StateManager {
 
 	/***
 	 * Called by {@link com.blox.maze.controller.MazeController#lokumFalling
-	 * lokumFalling} state when {@link com.blox.maze.model.Lokum Lokum} lands on
+	 * lokumFalling} state when {@link com.turpgames.maze.model.Lokum Lokum} lands on
 	 * a {@link com.blox.maze.model.Trap Trap}. FSM is advanced to
 	 * {@link com.blox.maze.controller.MazeController#lokumOnTrap lokumOnTrap}.
 	 * 
@@ -285,7 +285,7 @@ public class MazeController extends StateManager {
 
 	/***
 	 * Called by {@link com.blox.maze.controller.MazeController#lokumFalling
-	 * lokumFalling} state when {@link com.blox.maze.model.Lokum Lokum} lands on
+	 * lokumFalling} state when {@link com.turpgames.maze.model.Lokum Lokum} lands on
 	 * an {@link com.blox.maze.model.Objective Objective}. FSM is advanced to
 	 * {@link com.blox.maze.controller.MazeController#lokumOnObjective
 	 * lokumOnObjective}.
@@ -301,7 +301,7 @@ public class MazeController extends StateManager {
 
 	/***
 	 * Called by {@link com.blox.maze.controller.MazeController#lokumFalling
-	 * lokumFalling} state when {@link com.blox.maze.model.Lokum Lokum} lands on
+	 * lokumFalling} state when {@link com.turpgames.maze.model.Lokum Lokum} lands on
 	 * an {@link com.blox.maze.model.PortalDoor PortalDoor}. The collided
 	 * PortalDoor's are recorded. Lokum is unregistered from the
 	 * {@link com.turpgames.framework.v0.impl.Drawer DrawManager}. FSM is
@@ -325,13 +325,13 @@ public class MazeController extends StateManager {
 	}
 
 	/***
-	 * Repositions {@link com.blox.maze.model.Lokum Lokum} after collision and
+	 * Repositions {@link com.turpgames.maze.model.Lokum Lokum} after collision and
 	 * stops its movement. Called inside
 	 * {@link com.turpgames.controller.MazeController#lokumFallOnBlock(IBound, IBound, ICollidable)
 	 * lokumFallOnBlock}. Also called by the states
 	 * {@link com.blox.maze.controller.MazeController#lokumOnTrap lokumOnTrap}
 	 * and {@link com.blox.maze.controller.MazeController#lokumOnObjective
-	 * lokumOnObjective} <b>AFTER</b> {@link com.blox.maze.model.Lokum Lokum}
+	 * lokumOnObjective} <b>AFTER</b> {@link com.turpgames.maze.model.Lokum Lokum}
 	 * lands on a {@link com.blox.maze.model.Trap Trap} or an
 	 * {@link com.blox.maze.model.Objective Objective} <b>to handle consequent
 	 * collisions with {@link com.turpgames.maze.model.bloc.maze.model.Block Block}s</b>
@@ -373,7 +373,7 @@ public class MazeController extends StateManager {
 	 * Called by
 	 * {@link com.blox.maze.controller.MazeController#lokumOnlokumOnPortal
 	 * lokumOnPortal} state (when animation ends). Teleports
-	 * {@link com.blox.maze.model.Lokum Lokum} to the exit
+	 * {@link com.turpgames.maze.model.Lokum Lokum} to the exit
 	 * {@link com.blox.maze.model.PortalDoor PortalDoor}. Lokum is registered
 	 * back to the {@link com.turpgames.framework.v0.impl.Drawer DrawManager}
 	 * and {@link com.blox.maze.controller.MazeController#lokumOnlokumOnPortal

@@ -24,6 +24,8 @@ public final class Maze {
 	private static final ITexture textureRotationSignLeft;
 	private static final ITexture textureRotationSignRight;
 
+	private static final ITexture textureLokum;
+
 	static {
 		IResourceManager r = Game.getResourceManager();
 
@@ -33,6 +35,8 @@ public final class Maze {
 		textureRotationSignTemp = r.getTexture(R.game.textures.rotationSignTemp);
 		textureRotationSignLeft = r.getTexture(R.game.textures.rotationSignLeft);
 		textureRotationSignRight = r.getTexture(R.game.textures.rotationSignRight);
+
+		textureLokum = r.getTexture(R.game.textures.lokum);
 	}
 
 	public static void drawTrap(IDrawingInfo info) {
@@ -53,11 +57,12 @@ public final class Maze {
 		else if(direction == Maze.R_RIGHT)
 			TextureDrawer.draw(textureRotationSignRight, info);
 	}
+
+	public static void drawLokum(IDrawingInfo info) {
+		TextureDrawer.draw(textureLokum, info);
+	}
 	
 	public static String getString(String resourceKey) {
 		return Game.getLanguageManager().getString(resourceKey);
 	}
-
-
-
 }

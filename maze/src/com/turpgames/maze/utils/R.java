@@ -40,7 +40,15 @@ public final class R {
 			public static String rotationSignTemp = "rotationSignTemp";
 			public static String rotationSignLeft = "rotationSignLeft";
 			public static String rotationSignRight = "rotationSignRight";
+			
+			public static String lokum = "lokum";
 
+		}
+		
+		public static final class animations {
+			public static final String fellOnTrap = "fell_on_trap";
+			public static final String fellOnObjective = "fell_on_objective";
+			public static final String fellOnPortal = "fell_on_portal";
 		}
 	}
 
