@@ -1,8 +1,8 @@
-package com.turpgames.maze.controller;
+package com.turpgames.maze.controller.level;
 
 import com.turpgames.framework.v0.util.Animation;
 
-public class LokumOnObjectiveState extends State {
+public class LokumOnObjectiveState extends LevelState {
 	public LokumOnObjectiveState(Controller parent) {
 		super(parent);
 	}

@@ -1,4 +1,4 @@
-package com.turpgames.maze.controller;
+package com.turpgames.maze.controller.level;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import com.turpgames.maze.model.Level;
 import com.turpgames.maze.view.MazeScreen;
 
 public class Controller extends AbstractController {
-	protected State currentState;
+	protected LevelState currentState;
 	
 	protected Level model;
 	protected MazeScreen view;
@@ -64,7 +64,7 @@ public class Controller extends AbstractController {
 		setCurrentState(waiting);
 	}
 	
-	private void setCurrentState(State s) {
+	private void setCurrentState(LevelState s) {
 		if (currentState != null) {
 			for (CollisionGroup g : collisionGroups)
 				g.unregisterCollisionListener(currentState);
@@ -79,9 +79,9 @@ public class Controller extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.Controller.maze.controller.MazeController#waiting waiting}
+	 * Called by {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#waiting waiting}
 	 * state to signal start of user input. Old rotation value is recorded. The
-	 * next state ({@link com.Controller.maze.controller.MazeController#userRotating
+	 * next state ({@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#userRotating
 	 * userRotating}) is started after the input start coordinates are sent to
 	 * it.
 	 * 
@@ -95,7 +95,7 @@ public class Controller extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.Controller.maze.controller.MazeController#userRotating
+	 * Called by {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#userRotating
 	 * userRotating} state to update the rotation of the maze while user input
 	 * is still being received (Slide is not finished).
 	 * 
@@ -106,10 +106,10 @@ public class Controller extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.Controller.maze.controller.MazeController#userRotating
+	 * Called by {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#userRotating
 	 * userRotating} state to signal end of user input abortion. Maze rotation
 	 * is restored to its old value and FSM is moved back to
-	 * {@link com.Controller.maze.controller.MazeController#waiting waiting} state.
+	 * {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#waiting waiting} state.
 	 */
 	public void userAbortRotation() {
 		model.getRotation().angle.z = mazeOldRotation;
@@ -117,10 +117,10 @@ public class Controller extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.Controller.maze.controller.MazeController#userRotating
+	 * Called by {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#userRotating
 	 * userRotating} state when user input ends. Needed rotation angle to
 	 * complete user rotation to 90 degrees is calculated. FSM is moved to the
-	 * next state, {@link com.Controller.maze.controller.MazeController#mazeRotating
+	 * next state, {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#mazeRotating
 	 * mazeRotating}.
 	 * 
 	 * @param userRotation
@@ -133,7 +133,7 @@ public class Controller extends AbstractController {
 	}
 	
 	/***
-	 * Called by {@link com.Controller.maze.controller.MazeController#mazeRotating
+	 * Called by {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#mazeRotating
 	 * mazeRotating} state on each update cycle to rotate the maze till 90
 	 * degrees of rotation is reached. Upon reaching, MazeMover is informed
 	 * about new rotation.

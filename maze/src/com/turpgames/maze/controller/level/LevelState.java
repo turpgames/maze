@@ -1,4 +1,4 @@
-package com.turpgames.maze.controller;
+package com.turpgames.maze.controller.level;
 
 import com.turpgames.framework.v0.IAnimationEndListener;
 import com.turpgames.framework.v0.ICollisionListener;
@@ -8,12 +8,12 @@ import com.turpgames.maze.controller.base.AbstractState;
 import com.turpgames.maze.model.Level;
 import com.turpgames.maze.view.MazeScreen;
 
-public abstract class State extends AbstractState implements ICollisionListener, IAnimationEndListener {
+public abstract class LevelState extends AbstractState implements ICollisionListener, IAnimationEndListener {
 	final Level model;
 	final MazeScreen view;
 	final Controller controller;
 	
-	public State(Controller controller) {
+	public LevelState(Controller controller) {
 		this.controller = controller;
 		this.model = controller.model;
 		this.view = controller.view;

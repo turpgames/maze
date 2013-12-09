@@ -1,10 +1,10 @@
-package com.turpgames.maze.controller;
+package com.turpgames.maze.controller.level;
 
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.maze.controller.Controller;
-import com.turpgames.maze.controller.State;
+import com.turpgames.maze.controller.level.Controller;
+import com.turpgames.maze.controller.level.LevelState;
 
-public class MazeRotatingState extends State {
+public class MazeRotatingState extends LevelState {
 	public MazeRotatingState(Controller parent) {
 		super(parent);
 	}

@@ -1,4 +1,4 @@
-package com.turpgames.maze.controller;
+package com.turpgames.maze.controller.level;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package com.turpgames.maze.controller;
+package com.turpgames.maze.controller.level;
 
 import com.turpgames.framework.v0.ICollidable;
 import com.turpgames.framework.v0.ICollisionListener;
@@ -8,7 +8,7 @@ import com.turpgames.maze.model.Objective;
 import com.turpgames.maze.model.Trap;
 import com.turpgames.maze.model.Wall;
 
-public class FallingState extends State implements ICollisionListener {
+public class FallingState extends LevelState implements ICollisionListener {
 
 	public FallingState(Controller parent) {
 		super(parent);

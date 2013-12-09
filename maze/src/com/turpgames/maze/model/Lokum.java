@@ -7,7 +7,7 @@ import com.turpgames.framework.v0.IBound;
 import com.turpgames.framework.v0.ICollidable;
 import com.turpgames.framework.v0.impl.RectangleBound;
 import com.turpgames.framework.v0.util.Vector;
-import com.turpgames.maze.controller.MazeMover;
+import com.turpgames.maze.controller.level.MazeMover;
 import com.turpgames.maze.utils.Maze;
 import com.turpgames.maze.utils.R;
 
@@ -118,7 +118,7 @@ public class Lokum extends MazeAnimatedGameObject {
 	 * {@link com.blox.framework.v0.ICollidable ICollidable} object.
 	 * 
 	 * @param obj
-	 * @see {@link com.Controller.maze.controller.MazeController#portalFinished()
+	 * @see {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#portalFinished()
 	 *      portalFinished()}
 	 */
 	public void teleport(ICollidable obj) {
