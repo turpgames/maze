@@ -6,7 +6,6 @@ import java.util.List;
 import com.turpgames.framework.v0.impl.AnimatedGameObject;
 import com.turpgames.framework.v0.util.CollisionGroup;
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.framework.v0.util.Utils;
 import com.turpgames.maze.display.RotationSign;
 import com.turpgames.maze.utils.R;
 
@@ -126,7 +125,7 @@ public class Level extends MazeGameObject {
 
 	@Override
 	public void registerSelf() {
-		Game.getInputManager().register(this, Utils.LAYER_GAME);
+		
 	}
 
 	/***

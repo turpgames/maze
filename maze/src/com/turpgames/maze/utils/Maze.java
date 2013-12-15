@@ -1,9 +1,5 @@
 package com.turpgames.maze.utils;
 
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-
 import com.turpgames.framework.v0.IDrawingInfo;
 import com.turpgames.framework.v0.IResourceManager;
 import com.turpgames.framework.v0.ITexture;

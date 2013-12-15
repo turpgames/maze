@@ -20,10 +20,12 @@ public class Controller extends AbstractController {
 	 * Keeps the rotation before the user input starts.
 	 */
 	private float mazeOldRotation;
+	
 	/**
 	 * Values -1 or 1 for maze rotation direction (Right, Left).
 	 */
 	private int userRotation;
+	
 	/**
 	 * Angle of rotation that completes user rotation to 90 degrees.
 	 */
@@ -60,7 +62,7 @@ public class Controller extends AbstractController {
 		lokumOnTrap = new LokumOnTrapState(this);
 		
 		Game.getInputManager().register(this, Utils.LAYER_GAME);
-		// State machine is started on 'waiting' state.
+
 		setCurrentState(waiting);
 	}
 	
@@ -97,7 +99,7 @@ public class Controller extends AbstractController {
 	/***
 	 * Called by {@link com.turpgames.maze.controller.level.Controller.maze.controller.MazeController#userRotating
 	 * userRotating} state to update the rotation of the maze while user input
-	 * is still being received (Slide is not finished).
+	 * is still being received.
 	 * 
 	 * @param userRotation
 	 */
@@ -158,6 +160,11 @@ public class Controller extends AbstractController {
 	}
 
 	@Override
+	public boolean touchDown(float x, float y, int pointer, int button) {
+		return currentState.touchDown(x, y, pointer, button);
+	}
+	
+	@Override
 	public boolean touchDragged(float x, float y, int pointer) {
 		return currentState.touchDragged(x, y, pointer);
 	}
@@ -165,11 +172,6 @@ public class Controller extends AbstractController {
 	@Override
 	public boolean touchUp(float x, float y, int pointer, int button) {
 		return currentState.touchUp(x, y, pointer, button);
-	}
-
-	@Override
-	public boolean touchDown(float x, float y, int pointer, int button) {
-		return currentState.touchDown(x, y, pointer, button);
 	}
 
 	@Override
@@ -189,22 +191,15 @@ public class Controller extends AbstractController {
 		setCurrentState(lokumOnObjective);
 	}
 	
-
-	/***
-	 * Called by
-	 * {@link com.blox.maze.controller.MazeController#lokumOnObjective
-	 * lokumOnObjective} state (when animation ends) to move on to the next map.
-	 * TODO Currently only calls
-	 * {@link com.blox.maze.controller.MazeController#resetMap resetMap}.
-	 */
-	public void finishMap() {
+	public void objectiveReached() {
 		// TODO Get next map falan
 		resetMap();
 	}
-	/***
-	 * Called by {@link com.blox.maze.controller.MazeController#lokumOnTrap
-	 * lokumOnTrap} state (when animation ends) to restart the current map.
-	 */
+	
+	public void trapTouched() {
+		resetMap();
+	}
+	
 	public void resetMap() {
 		// TODO: reset map and lokum
 		MazeMover.instance.resetRotation();
@@ -212,4 +207,3 @@ public class Controller extends AbstractController {
 		setCurrentState(waiting);
 	}
 }
-	

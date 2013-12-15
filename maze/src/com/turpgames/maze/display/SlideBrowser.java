@@ -9,51 +9,70 @@ import com.turpgames.framework.v0.util.Utils;
 
 public class SlideBrowser extends GameObject {
 
-	private static float switchThreshold = 0.7f;
-	private static float boundaryLimit = 0.2f;
-	private List<GameObject> items;
+	private static float switchThreshold = Game.getVirtualWidth() * 2 / 5;
+	private static float boundaryLimit = Game.getVirtualWidth() * 1 / 5;
+	private static float slideLimit = 50f;
+	private List<SlideBrowserObject> items;
 	
 	private int currentIndex;
 	private float elapsedReturn;
 	private static float durationReturn = 1f;
 	
+	private boolean isSliding;
+	
 	public SlideBrowser() {
-		items = new ArrayList<GameObject>();
+		items = new ArrayList<SlideBrowserObject>();
 		listenInput(true);
-		currentIndex = 1;
+		currentIndex = 0;
 		elapsedReturn = durationReturn + 100;
 	}
 	
-	public void registerObject(GameObject obj) {
+	public void registerObject(SlideBrowserObject obj) {
+		float x = obj.getLocation().x;
+		float y = obj.getLocation().y;
+		obj.getLocation().set(x + (- currentIndex + items.size()) * Game.getVirtualWidth(), y + 0.0f);
 		items.add(obj);
+		if (items.size() == 1)
+			items.get(currentIndex).listenInput(isListeningInput());
 	}
 	
-	public void unregisterObject(GameObject obj) {
+	public void unregisterObject(SlideBrowserObject obj) {
 		items.remove(obj);
 	}
 	
-	private boolean isReturning() {
+	private boolean isSwitching() {
 		return elapsedReturn < durationReturn;
 	}
 	
+	float p;
 	@Override
 	public void draw() {
 		if (items.size() == 0)
 			return;		
 		
-		if(isReturning()) {
+		if(isSliding && isSwitching()) {
 			elapsedReturn += Game.getDeltaTime();
-			dx *= (durationReturn - elapsedReturn) / durationReturn;
-			if (durationReturn - elapsedReturn < 0.02) {
-				dx = 0;
+			float p = (1 - Math.max((durationReturn - elapsedReturn) / (durationReturn ), 60/100)) * totalDx;
+			
+			totalDx *= Math.max((durationReturn - elapsedReturn) / (durationReturn ), 60/100);
+
+			if (Math.abs(totalDx) < 0.005) {
+				p = totalDx;
+				totalDx = 0;
 				elapsedReturn = durationReturn + 100;
+			}
+			for (int i = 0; i < items.size(); i++) {
+//				Game.pushRenderingShift((-dx - currentIndex + i)* Game.getVirtualWidth(), 0, false);
+//				items.get(i).getLocation().set((-dx - currentIndex + i)* Game.getVirtualWidth(), items.get(i).getLocation().y);
+				items.get(i).getLocation().add(p, 0f);
+//				Game.popRenderingShift();
 			}
 		}
 
 		for (int i = 0; i < items.size(); i++) {
-			Game.pushRenderingShift((-dx - currentIndex + i)* Game.getVirtualWidth(), 0, false);
+//			Game.pushRenderingShift((-dx - currentIndex + i)* Game.getVirtualWidth(), 0, false);
 			items.get(i).draw();
-			Game.popRenderingShift();
+//			Game.popRenderingShift();
 		}
 	}
 	
@@ -62,49 +81,75 @@ public class SlideBrowser extends GameObject {
 		Game.getInputManager().register(this, Utils.LAYER_SCREEN);
 	}
 	
-	private float dx;
-	private float startX;
 	
+	private float startX;
+	private boolean startedSliding;
 	@Override
 	public boolean touchDown(float x, float y, int pointer, int button) {
-		elapsedReturn = durationReturn + 100;
+		if (isInputInCurrentItem(x, y)) {
+			return false;
+		}
+		isSliding = false;
+		startedSliding = true;
+		items.get(currentIndex).listenInput(false);
 		startX = x;
+		slideDx = 0;
 		return false;
 	}
 	
+	private float totalDx;
+	private float slideDx;
 	@Override
 	public boolean touchDragged(float x, float y, int pointer) {
-		dx += ((startX - x) * 2 / Game.getVirtualWidth());
-		if (dx > 0) {
-			dx = Math.min(dx, boundaryLimit + (items.size() -1 - currentIndex));
-		}
-		else if (dx < 0) {
-			dx = Math.max(dx, - boundaryLimit - currentIndex);
-		}
+		if (!startedSliding)
+			return false;
+		float f = ((startX - x) > 0 ? Math.min(startX - x, slideLimit) : Math.max(startX - x, -slideLimit));
+		f *= 1.5f;
+		//boundaryCheck
+		if (slideDx + f + totalDx > boundaryLimit + (items.size() -1 -currentIndex) * Game.getVirtualWidth())
+			f = boundaryLimit + (items.size() -1 -currentIndex) * Game.getVirtualWidth() - slideDx - totalDx;
+		else if (slideDx + f + totalDx < -boundaryLimit + (-currentIndex) * Game.getVirtualWidth())
+			f = -boundaryLimit + (-currentIndex) * Game.getVirtualWidth() - slideDx - totalDx;
+				
+		slideDx += f;
 		startX = x;
+		for (int i = 0; i < items.size(); i++) {
+			items.get(i).getLocation().add(- f, 0.0f);
+		}
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(float x, float y, int pointer, int button) {
+		if(!startedSliding)
+			return false;
 		lifted();
 		return false;
 	}
 
+	private boolean isInputInCurrentItem(float x, float y) {
+		if (Utils.isIn(x, y, items.get(currentIndex)))
+			return true;
+		return false;
+	}
+	
 	private void lifted() {
-		// can pass more than one item on one swipe
 		elapsedReturn = 0;
-		if(dx > switchThreshold) { // go forward
-			dx -= switchThreshold;
-			int tmp = (int) dx + 1;
+		if(slideDx > switchThreshold) { // go forward
+			slideDx -= switchThreshold;
+			int tmp = (int) (slideDx / Game.getVirtualWidth()) + 1;
 			currentIndex += tmp;
-			dx = dx - tmp + switchThreshold;
+			slideDx += - tmp * Game.getVirtualWidth() + switchThreshold;
 		}
-		else if (dx < -switchThreshold) { // go backward
-			dx += switchThreshold;
-			int tmp = (int) dx - 1;
+		else if (slideDx < -switchThreshold) { // go backward
+			slideDx += switchThreshold;
+			int tmp = (int) (slideDx / Game.getVirtualWidth()) - 1;
 			currentIndex += tmp;
-			dx = dx - tmp - switchThreshold;
+			slideDx += - tmp * Game.getVirtualWidth() - switchThreshold;
 		}
+		items.get(currentIndex).listenInput(true);
+		totalDx += slideDx;
+		isSliding = true;
+		startedSliding = false;
 	}
 }

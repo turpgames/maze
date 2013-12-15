@@ -9,6 +9,6 @@ public class LokumOnObjectiveState extends LevelState {
 
 	@Override
 	public void onAnimationEnd(Animation animation) {
-		controller.finishMap();
+		controller.objectiveReached();
 	}
 }
