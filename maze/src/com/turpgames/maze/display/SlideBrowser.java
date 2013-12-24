@@ -78,7 +78,7 @@ public class SlideBrowser extends GameObject {
 	
 	@Override
 	public void registerSelf() {
-		Game.getInputManager().register(this, Utils.LAYER_SCREEN);
+		Game.getInputManager().register(this, Game.LAYER_SCREEN);
 	}
 	
 	

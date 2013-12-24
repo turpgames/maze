@@ -5,7 +5,6 @@ import java.util.List;
 import com.turpgames.framework.v0.impl.AnimatedGameObject;
 import com.turpgames.framework.v0.util.CollisionGroup;
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.framework.v0.util.Utils;
 import com.turpgames.maze.controller.base.AbstractController;
 import com.turpgames.maze.model.Level;
 import com.turpgames.maze.view.MazeScreen;
@@ -61,7 +60,7 @@ public class Controller extends AbstractController {
 		lokumOnObjective = new LokumOnObjectiveState(this);
 		lokumOnTrap = new LokumOnTrapState(this);
 		
-		Game.getInputManager().register(this, Utils.LAYER_GAME);
+		Game.getInputManager().register(this, Game.LAYER_GAME);
 
 		setCurrentState(waiting);
 	}

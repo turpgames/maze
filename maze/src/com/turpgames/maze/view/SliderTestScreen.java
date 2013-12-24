@@ -7,7 +7,6 @@ import com.turpgames.framework.v0.impl.Text;
 import com.turpgames.framework.v0.util.Color;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.framework.v0.util.ShapeDrawer;
-import com.turpgames.framework.v0.util.Utils;
 import com.turpgames.maze.display.SlideBrowser;
 import com.turpgames.maze.display.SlideBrowserObject;
 
@@ -25,7 +24,7 @@ public class SliderTestScreen extends MazeScreen {
 		slideBrowser.registerObject(new SliderTestObject(""+3));
 		slideBrowser.registerObject(new SliderTestObject(""+4));
 		slideBrowser.registerObject(new SliderTestObject(""+5));
-		registerDrawable(slideBrowser, Utils.LAYER_GAME);
+		registerDrawable(slideBrowser, Game.LAYER_GAME);
 	}
 	
 	class SliderTestObject extends SlideBrowserObject {

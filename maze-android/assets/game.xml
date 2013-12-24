@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <game
-    id="Ichigu"
+    id="Maze Game"
     class="com.turpgames.maze.view.MazeGame"
-    version="1.1.0" >
+    version="0.0.1" >
 
     <params>
 
@@ -114,7 +114,11 @@
     </animations>
     
     <languages>
-        
+        <language
+            id="en-US"
+            encoding="UTF8"
+            flag-texture-id="flag_en_us"
+            path="lang/Strings_en_US.properties" />
     </languages>
     
     <resources>

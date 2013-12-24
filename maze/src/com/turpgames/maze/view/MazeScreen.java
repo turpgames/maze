@@ -1,13 +1,13 @@
 package com.turpgames.maze.view;
 
 import com.turpgames.framework.v0.impl.Screen;
-import com.turpgames.framework.v0.util.Utils;
+import com.turpgames.framework.v0.util.Game;
 
 public class MazeScreen extends Screen {
 	protected IMazeViewListener screenListener = IMazeViewListener.NULL;
 
 	protected void notifyScreenActivated() {
-		registerDrawable(screenListener, Utils.LAYER_SCREEN);
+		registerDrawable(screenListener, Game.LAYER_SCREEN);
 		screenListener.onScreenActivated();
 	}
 
