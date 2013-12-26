@@ -5,7 +5,7 @@ import com.turpgames.framework.v0.IResourceManager;
 import com.turpgames.framework.v0.ITexture;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.framework.v0.util.TextureDrawer;
-import com.turpgames.maze.model.BlockObject;
+import com.turpgames.maze.model.blocks.BlockObject;
 
 public final class Maze {
 
@@ -29,7 +29,7 @@ public final class Maze {
 	static {
 		IResourceManager r = Game.getResourceManager();
 
-		blockTextures = new ITexture[3];
+		blockTextures = new ITexture[4];
 		blockTextures[BlockObject.WALL] = r.getTexture(R.game.textures.wall);
 		blockTextures[BlockObject.OBJECTIVE] = r.getTexture(R.game.textures.objective);
 		blockTextures[BlockObject.TRAP] = r.getTexture(R.game.textures.trap);

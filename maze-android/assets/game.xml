@@ -32,7 +32,7 @@
 
         <param
             key="default-screen"
-            value="slider-test" />
+            value="editor-screen" />
 
         <param
             key="screen-switcher"
@@ -79,6 +79,9 @@
         <screen
             id="maze-test"
             class="com.turpgames.maze.view.MazeTestScreen" />
+        <screen
+            id="editor-screen"
+            class="com.turpgames.maze.view.EditorScreen" />
         
     </screens>
     

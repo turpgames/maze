@@ -7,6 +7,11 @@ import com.turpgames.framework.v0.impl.AnimatedGameObject;
 import com.turpgames.framework.v0.util.CollisionGroup;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.maze.display.RotationSign;
+import com.turpgames.maze.model.blocks.BlockObject;
+import com.turpgames.maze.model.blocks.Objective;
+import com.turpgames.maze.model.blocks.Trap;
+import com.turpgames.maze.model.blocks.Wall;
+import com.turpgames.maze.utils.GameSettings;
 import com.turpgames.maze.utils.R;
 
 /***
@@ -17,13 +22,6 @@ import com.turpgames.maze.utils.R;
  * 
  */
 public class Level extends MazeGameObject {
-
-	private static enum DataType {
-		EMPTY, WALL, TRAP, OBJECTIVE
-	}; // make BlockType and collect all in one class?
-
-	public static final int blockWidth = 40;
-	public static final int blockHeight = 40;
 
 	// Maze translations
 	public float tx;
@@ -48,10 +46,10 @@ public class Level extends MazeGameObject {
 		int[][] data = map.getData();
 //		int[][][] portalData = level.getPortalData();
 
-		int cols = data.length;
-		int rows = data[0].length;
-		int mazeWidth = cols * blockWidth;
-		int mazeHeight = rows * blockHeight;
+		int cols = data[0].length;
+		int rows = data.length;
+		int mazeWidth = cols * GameSettings.blockWidth;
+		int mazeHeight = rows * GameSettings.blockHeight;
 
 		tx = (Game.getVirtualWidth() - mazeWidth) / 2;
 		ty = (Game.getVirtualHeight() - mazeHeight) / 2;
@@ -63,20 +61,20 @@ public class Level extends MazeGameObject {
 				ty + mazeWidth + R.ui.rotationSignWidth / 2);
 		
 		blocks = new ArrayList<BlockObject>();
-		for (int i = 0; i < cols; i++) {
-			for (int j = 0; j < rows; j++) {
-				if (data[i][j] == DataType.WALL.ordinal()) {
-					Wall block = new Wall(tx + i * blockWidth, ty + j * blockHeight);
+		for (int i = 0; i < rows; i++) {
+			for (int j = 0; j < cols; j++) {
+				if (data[i][j] == BlockObject.WALL) {
+					Wall block = new Wall(tx + j * GameSettings.blockWidth, ty + (rows - 1 - i) * GameSettings.blockHeight);
 					block.anchorRotation(getRotation());
 					
 					blocks.add(block);
-				} else if (data[i][j] == DataType.TRAP.ordinal()) {
-					Trap trap = new Trap(tx + i * blockWidth, ty + j * blockHeight);
+				} else if (data[i][j] == BlockObject.TRAP) {
+					Trap trap = new Trap(tx + j * GameSettings.blockWidth, ty + (rows - 1 - i) * GameSettings.blockHeight);
 					trap.anchorRotation(getRotation());
 
 					blocks.add(trap);
-				} else if (data[i][j] == DataType.OBJECTIVE.ordinal()) {
-					Objective objective = new Objective(tx + i * blockWidth, ty + j * blockHeight);
+				} else if (data[i][j] == BlockObject.OBJECTIVE) {
+					Objective objective = new Objective(tx + j * GameSettings.blockWidth, ty + (rows - 1 - i) * GameSettings.blockHeight);
 					objective.anchorRotation(getRotation());
 
 					blocks.add(objective);
@@ -121,11 +119,6 @@ public class Level extends MazeGameObject {
 			block.draw();
 		lokum.draw();
 		rotationSign.draw();
-	}
-
-	@Override
-	public void registerSelf() {
-		
 	}
 
 	/***

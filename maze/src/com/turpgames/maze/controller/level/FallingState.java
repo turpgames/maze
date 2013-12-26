@@ -4,9 +4,9 @@ import com.turpgames.framework.v0.ICollidable;
 import com.turpgames.framework.v0.ICollisionListener;
 import com.turpgames.framework.v0.util.CollisionEvent;
 import com.turpgames.maze.model.Lokum;
-import com.turpgames.maze.model.Objective;
-import com.turpgames.maze.model.Trap;
-import com.turpgames.maze.model.Wall;
+import com.turpgames.maze.model.blocks.Objective;
+import com.turpgames.maze.model.blocks.Trap;
+import com.turpgames.maze.model.blocks.Wall;
 
 public class FallingState extends LevelState implements ICollisionListener {
 

@@ -51,9 +51,9 @@ public class SliderTestScreen extends MazeScreen {
 		}
 		
 		@Override
-		protected boolean onTouchDown() {
+		protected boolean onTouchDown(float x, float y) {
 			clickedInfo.show();
-			return super.onTouchDown();
+			return super.onTouchDown(x, y);
 		}
 		
 		@Override

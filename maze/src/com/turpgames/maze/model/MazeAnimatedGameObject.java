@@ -9,9 +9,4 @@ public class MazeAnimatedGameObject extends AnimatedGameObject {
 		getRotation().angle = rotation.angle;
 		getRotation().origin = rotation.origin;
 	}
-
-	@Override
-	public void registerSelf() {
-		
-	}
 }

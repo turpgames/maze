@@ -19,9 +19,4 @@ public class RotationSign extends GameObject {
 	public void draw() {
 		Maze.drawRotationSign(this, direction);
 	}
-
-	@Override
-	public void registerSelf() {
-		
-	}
 }

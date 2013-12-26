@@ -1,4 +1,4 @@
-package com.turpgames.maze.model;
+package com.turpgames.maze.model.blocks;
 
 public class Objective extends BlockObject {
 

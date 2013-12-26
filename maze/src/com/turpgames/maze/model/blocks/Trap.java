@@ -1,4 +1,5 @@
-package com.turpgames.maze.model;
+package com.turpgames.maze.model.blocks;
+
 
 public class Trap extends BlockObject {
 

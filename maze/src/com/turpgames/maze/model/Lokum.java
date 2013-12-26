@@ -8,6 +8,10 @@ import com.turpgames.framework.v0.ICollidable;
 import com.turpgames.framework.v0.impl.RectangleBound;
 import com.turpgames.framework.v0.util.Vector;
 import com.turpgames.maze.controller.level.MazeMover;
+import com.turpgames.maze.model.blocks.Objective;
+import com.turpgames.maze.model.blocks.Trap;
+import com.turpgames.maze.model.blocks.Wall;
+import com.turpgames.maze.utils.GameSettings;
 import com.turpgames.maze.utils.Maze;
 import com.turpgames.maze.utils.R;
 
@@ -16,17 +20,21 @@ public class Lokum extends MazeAnimatedGameObject {
 	private List<ICollidable> collidedObjects;
 
 	public Lokum(Level maze, float x, float y) {
+		this(maze, x, y, GameSettings.blockWidth, GameSettings.blockHeight);
+	}
+	
+	public Lokum(Level maze, float x, float y, float width, float height) {
 		this.startLocation = new Vector();
-		this.startLocation.x = maze.tx + x * Level.blockWidth;
-		this.startLocation.y = maze.ty + y * Level.blockHeight;
+		this.startLocation.x = maze.tx + x * GameSettings.blockWidth;
+		this.startLocation.y = maze.ty + y * GameSettings.blockHeight;
 		getLocation().x = this.startLocation.x;
 		getLocation().y = this.startLocation.y;
 		
-		setWidth(Level.blockWidth);
-		setHeight(Level.blockHeight);
+		setWidth(width);
+		setHeight(height);
 		// bounds.add(new RectangleBound(this, new Vector(2, 2), Maze.blockWidth
 		// - 4, Maze.blockHeight - 4));
-		addBound(new RectangleBound(this, new Vector(0, 0), Level.blockWidth, Level.blockHeight));
+		addBound(new RectangleBound(this, new Vector(0, 0), GameSettings.blockWidth, GameSettings.blockHeight));
 		addAnimation(R.game.animations.fellOnTrap);
 		addAnimation(R.game.animations.fellOnObjective);
 		
@@ -42,11 +50,6 @@ public class Lokum extends MazeAnimatedGameObject {
 			Maze.drawLokum(this);
 		else 
 			super.draw();
-	}
-
-	@Override
-	public void registerSelf() {
-		
 	}
 
 	/***
