@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.Input.Keys;
+import com.turpgames.editor.commands.AddCanvasCenter;
 import com.turpgames.editor.commands.ClearSelectedCanvasObjects;
 import com.turpgames.editor.commands.Commander;
+import com.turpgames.editor.commands.RemoveCanvasCenter;
 import com.turpgames.editor.commands.SelectCanvasObject;
 import com.turpgames.editor.commands.SetTypes;
 import com.turpgames.editor.commands.SwitchSelectWithFrame;
@@ -30,8 +32,14 @@ public class Editor extends GameObject {
 	private static final float toolBarX = Editor.blockWidth;
 	private static final float toolBarY = Editor.blockHeight;
 	
+	public static final int LAYER_TOOLBAR = Game.LAYER_GAME + 1;
+	public static final int LAYER_CANVAS_GRID = Game.LAYER_GAME + 2;
+	public static final int LAYER_CANVAS_CENTERS = Game.LAYER_GAME + 3;
+	public static final int LAYER_ROTATOR = Game.LAYER_GAME + 4;
+	
 	private Commander commander;
-	private CanvasObject[][] canvas;
+	private List<CanvasObject> canvas;
+	private CanvasCenter[][] centers;
 	private List<GameObject> toolbarObjects;
 	
 	private List<CanvasObject> selectedObjects;
@@ -39,14 +47,23 @@ public class Editor extends GameObject {
 	private List<CanvasObject> insideFrame;
 	private List<CanvasObject> tempFrame;
 	
+	
 	public Editor() {
 		commander = new Commander();
-		canvas = new CanvasObject[12][19];
+		canvas = new ArrayList<CanvasObject>();
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				canvas[i][j] = new CanvasObject(this, i, j);
+				canvas.add(new CanvasObject(this, i, j));
 			}
 		}
+		
+		centers = new CanvasCenter[rows-1][cols-1];
+		for (int i = 0; i < rows-1; i++) {
+			for (int j = 0; j < cols-1; j++) {
+				centers[i][j] = new CanvasCenter(this, i, j);
+			}
+		}
+		
 		
 		toolbarObjects = new ArrayList<GameObject>();
 		int i = 0;
@@ -69,15 +86,18 @@ public class Editor extends GameObject {
 
 	@Override
 	public void draw() {
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				canvas[i][j].draw();
+		for (CanvasObject obj : canvas)
+			obj.draw();
+		for (int i = 0; i < rows-1; i++) {
+			for (int j = 0; j < cols-1; j++) {
+				centers[i][j].draw();
 			}
 		}
 		for (GameObject obj : toolbarObjects)
 			obj.draw();
 		if (dragging)
 			ShapeDrawer.drawRect(touchDownX, touchDownY, currentX - touchDownX, currentY - touchDownY, Color.green(), false, false);
+		Rotator.instance.draw();
 	}
 
 	@Override
@@ -129,10 +149,10 @@ public class Editor extends GameObject {
 		}
 		
 		tempFrame.clear();
-		for (int i = Math.min(touchDownRow, currentRow); i <= Math.max(touchDownRow, currentRow); i++) {
-			for (int j = Math.min(touchDownCol, currentCol); j <= Math.max(touchDownCol, currentCol); j++) {
-				tempFrame.add(canvas[i][j]);
-				canvas[i][j].setSelected(!canvas[i][j].isSelected());
+		for (CanvasObject obj : canvas) {
+			if (obj.indicesBetween(Math.min(touchDownRow, currentRow), Math.max(touchDownRow, currentRow), Math.min(touchDownCol, currentCol), Math.max(touchDownCol, currentCol))) {
+				tempFrame.add(obj);
+				obj.setSelected(!obj.isSelected());	
 			}
 		}
 		
@@ -192,5 +212,68 @@ public class Editor extends GameObject {
 			commander.doCommand(new UnselectCanvasObject(canvasObject, selectedObjects));
 		else
 			commander.doCommand(new SelectCanvasObject(canvasObject, selectedObjects));
+	}
+
+	public void canvasCenterTapped(CanvasCenter canvasCenter) {
+		if (canvasCenter.isActive())
+			commander.doCommand(new RemoveCanvasCenter(canvasCenter));
+		else {
+			if (centerIsAllowed(canvasCenter))
+				commander.doCommand(new AddCanvasCenter(canvasCenter, selectedObjects));
+		}
+	}
+
+	private boolean centerIsAllowed(CanvasCenter canvasCenter) {
+//		int centerX = canvasCenter.getXIndex() + 1;
+//		int centerY = canvasCenter.getYIndex() + 1;
+//		int rotationDirection = 1;
+//		
+//		int newX, newY;
+//		for (CanvasObject obj : selectedObjects) {
+//			newX = obj.getXIndex();
+//			newY = obj.getYIndex();
+//			for (int i = 0; i < 3; i++) {
+//				newX = centerX - rotationDirection*(newY - centerY) - (rotationDirection == 1 ? 1 : 0);
+//				newY = centerY + rotationDirection*(newX - centerX) - (rotationDirection != 1 ? 1 : 0);
+//				
+//				if (indicesOutBounds(newX, newY)) {
+//					return false;
+//				}
+//				if (canvas[newX][newY].getType() != BlockObject.NONE) {
+//					if (!selectedObjects.contains(canvas[newX][newY])) {
+//						return false;
+//					}
+//					return false;
+//				}
+//				
+//			}
+//		}
+		
+		return true;
+	}
+
+	private boolean indicesOutBounds(int newX, int newY) {
+		return !(newX < rows && newX >= 0 && newY < cols && newY >= 0);
+	}
+
+	public void canvasCenterRotated(CanvasCenter canvasCenter, int rotationDirection) {
+		int centerX = canvasCenter.getXIndex() + 1;
+		int centerY = canvasCenter.getYIndex() + 1;
+		
+		List<CanvasObject> children = canvasCenter.getChildren();
+		int newX, newY;
+		canvas.removeAll(children);
+		for (CanvasObject obj : children) {
+			newX = centerX - rotationDirection*(obj.getYIndex() - centerY) - (rotationDirection == 1 ? 1 : 0);
+			newY = centerY + rotationDirection*(obj.getXIndex() - centerX) - (rotationDirection != 1 ? 1 : 0);
+			for (int i = canvas.size() - 1; i >= 0; i--){
+				if (canvas.get(i).getXIndex() == newX && canvas.get(i).getYIndex() == newY) {
+					canvas.remove(canvas.get(i));
+					canvas.add(new CanvasObject(this, obj.getXIndex(), obj.getYIndex()));
+				}
+			}
+			obj.updateIndices(newX, newY);
+			canvas.add(obj);
+		}
 	}
 }

@@ -8,18 +8,18 @@ import com.turpgames.maze.model.blocks.BlockObject;
 public class CanvasObject extends BlockObject {
 	private boolean selected;
 	private Editor parent;
+	private int xIndex;
+	private int yIndex;
 	
 	public CanvasObject(Editor parent, int xIndex, int yIndex) {
 		this(parent, BlockObject.NONE, xIndex, yIndex);
 	}
-
-	public CanvasObject(Editor parent, int type, int xIndex, int yIndex) {
-		this(type, Editor.tx + xIndex * Editor.blockWidth, Editor.ty + yIndex * Editor.blockHeight);
-		this.parent = parent;
-	}
 	
-	private CanvasObject(int type, float x, float y) {
-		super(type, x, y);
+	private CanvasObject(Editor parent, int type, int xIndex, int yIndex) {
+		super(type, Editor.tx + xIndex * Editor.blockWidth, Editor.ty + yIndex * Editor.blockHeight);
+		this.parent = parent;
+		this.xIndex = xIndex;
+		this.yIndex = yIndex;
 		setWidth(Editor.blockWidth);
 		setHeight(Editor.blockHeight);
 		listenInput(true);
@@ -40,7 +40,7 @@ public class CanvasObject extends BlockObject {
 	
 	@Override
 	public void registerSelf() {
-		Game.getInputManager().register(this, Game.LAYER_GAME);
+		Game.getInputManager().register(this, Editor.LAYER_CANVAS_GRID);
 	}
 	
 	@Override
@@ -55,5 +55,25 @@ public class CanvasObject extends BlockObject {
 
 	public void setSelected(boolean selected) {
 		this.selected = selected;
+	}
+	
+	public int getXIndex() {
+		return xIndex;
+	}
+	
+	public int getYIndex() {
+		return yIndex;
+	}
+	
+	public void updateIndices(int x, int y) {
+		xIndex = x;
+		yIndex = y;
+
+		getLocation().x = Editor.tx + xIndex * Editor.blockWidth;
+		getLocation().y = Editor.ty + yIndex * Editor.blockHeight;
+	}
+
+	public boolean indicesBetween(int minX, int maxX, int minY, int maxY) {
+		return xIndex >= minX && xIndex <= maxX && yIndex >= minY && yIndex <= maxY;
 	}
 }

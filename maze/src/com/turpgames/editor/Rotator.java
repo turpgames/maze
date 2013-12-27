@@ -16,7 +16,6 @@ public class Rotator extends GameObject {
 	private final static float maxTemp = 35;
 	private final static float minTemp = 15;
 	
-	private float oldRotation; 					// rotation before the user input starts
 	private float rotateStartX, rotateStartY; 	// rotation start point coordinates
 	private float tempRotation; 				// current temporary rotation
 	private int rotationDirection; 				// -1 (right) or 1 (left)
@@ -37,6 +36,7 @@ public class Rotator extends GameObject {
 		setHeight(height);
 		getLocation().set((Game.getVirtualWidth() - getWidth()) / 2, 100);
 		getColor().set(Color.blue());
+		listenInput(true);
 	}
 
 	@Override
@@ -46,34 +46,42 @@ public class Rotator extends GameObject {
 			mazeRotate(rotationSpeed * Game.getDeltaTime());
 	}
 	
+	@Override
+	public void registerSelf() {
+		Game.getInputManager().register(this, Editor.LAYER_ROTATOR);
+	}
+	
 	public void registerCanvasCenter(CanvasCenter center) {
 		centers.add(center);
+		center.anchorRotation(getRotation());
 	}
 	
 	public void unregisterCanvasCenter(CanvasCenter center) {
 		centers.remove(center);
+		center.deanchorRotation();
 	}
 	
 	public void mazeRotate(float increment) {
-		for (CanvasCenter c : centers)
-			c.getRotation().angle.z += rotationDirection * increment;
+		getRotation().angle.z += rotationDirection * increment;
 		complementaryAngle -= increment; // Keep track of remaining rotation.
 		if (complementaryAngle <= 0 + epsilon) { // MAZE_ROTATE FINISHED
-			for (CanvasCenter c : centers)
-				c.getRotation().angle.z = (oldRotation + rotationDirection * 90);
+//			globalRotation += (rotationDirection * 90);
+			getRotation().angle.z = 0;
+			for (CanvasCenter c : centers) {
+				c.finishedRotating(rotationDirection);
+			}
 			MazeMover.instance.turn(rotationDirection == 1);
-
+			
 			working = false;
 		}
 	}
 	
 	@Override
 	public boolean onTouchDown(float x, float y) {
-		oldRotation = getRotation().angle.z;
 		this.rotateStartX = x;
 		this.rotateStartY = y;
 		this.tempRotation = 0;
-		return false;
+		return true;
 	}
 	
 	@Override
@@ -95,9 +103,8 @@ public class Rotator extends GameObject {
 		rotateStartX = x;
 		rotateStartY = y;
 
-		for (CanvasCenter c : centers)
-			c.getRotation().angle.z = (oldRotation + tempRotation);
-		return false;
+		getRotation().angle.z = tempRotation;
+		return true;
 
 	}
 
@@ -117,13 +124,12 @@ public class Rotator extends GameObject {
 			rotationDirection = -1;
 		else {
 			tempRotation = 0;
-			for (CanvasCenter c : centers)
-				c.getRotation().angle.z = oldRotation;
-			return false;
+			getRotation().angle.z = 0;
+			return true;
 		}
 
 		complementaryAngle = 90 - rotationDirection * tempRotation;
 		working = true;
-		return false;
+		return true;
 	}
 }

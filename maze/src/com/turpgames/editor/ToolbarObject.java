@@ -21,6 +21,6 @@ public class ToolbarObject extends BlockObject {
 	
 	@Override
 	public void registerSelf() {
-		Game.getInputManager().register(this, Game.LAYER_GAME);
+		Game.getInputManager().register(this, Editor.LAYER_TOOLBAR);
 	}
 }
