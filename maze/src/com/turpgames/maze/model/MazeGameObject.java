@@ -11,8 +11,8 @@ public abstract class MazeGameObject extends GameObject {
 		getRotation().origin = rotation.origin;
 	}
 	
-	public void deanchorRotation() {
-		getRotation().angle = new Vector(getRotation().angle.x, getRotation().angle.y, getRotation().angle.z);
-		getRotation().origin = new Vector(getRotation().origin.x, getRotation().origin.y);
-	}
+//	public void deanchorRotation() {
+//		getRotation().angle = new Vector(getRotation().angle.x, getRotation().angle.y, getRotation().angle.z);
+//		getRotation().origin = new Vector(getRotation().origin.x, getRotation().origin.y);
+//	}
 }

@@ -11,8 +11,8 @@ public class MazeAnimatedGameObject extends AnimatedGameObject {
 		getRotation().origin = rotation.origin;
 	}
 
-	public void deanchorRotation() {
-		getRotation().angle = new Vector(0, 0);
-		getRotation().origin = new Vector(getLocation().x + getWidth() / 2, getLocation().y + getHeight() / 2);
-	}
+//	public void deanchorRotation() {
+//		getRotation().angle = new Vector(0, 0);
+//		getRotation().origin = new Vector(getLocation().x + getWidth() / 2, getLocation().y + getHeight() / 2);
+//	}
 }

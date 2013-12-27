@@ -22,7 +22,7 @@ public abstract class BlockObject extends MazeGameObject implements ICollidable 
 		getLocation().y = y;
 		setWidth(GameSettings.blockWidth);
 		setHeight(GameSettings.blockHeight);
-//		addBound(new RectangleBound(this, new Vector(0, 0), GameSettings.blockWidth, GameSettings.blockHeight));
+		addBound(new RectangleBound(this, new Vector(0, 0), GameSettings.blockWidth, GameSettings.blockHeight));
 	}
 	
 	@Override

@@ -18,11 +18,11 @@ public class AddCanvasCenter implements ICommand {
 	@Override
 	public void doCommand() {
 		center.setChildren(selectedObjects);
-		center.activate();
+		center.turnOn();
 	}
 
 	@Override
 	public void undoCommand() {
-		center.deactivate();
+		center.turnOff();
 	}
 }

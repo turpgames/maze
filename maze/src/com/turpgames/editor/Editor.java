@@ -29,8 +29,8 @@ public class Editor extends GameObject {
 	protected static final float tx = (Game.getVirtualWidth() - rows * Editor.blockWidth) / 2;
 	protected static final float ty = (Game.getVirtualHeight() - cols * Editor.blockHeight) / 2;
 	
-	private static final float toolBarX = Editor.blockWidth;
-	private static final float toolBarY = Editor.blockHeight;
+	public static final float toolBarX = Editor.blockWidth;
+	public static final float toolBarY = Editor.blockHeight;
 	
 	public static final int LAYER_TOOLBAR = Game.LAYER_GAME + 1;
 	public static final int LAYER_CANVAS_GRID = Game.LAYER_GAME + 2;
@@ -41,12 +41,12 @@ public class Editor extends GameObject {
 	private List<CanvasObject> canvas;
 	private CanvasCenter[][] centers;
 	private List<GameObject> toolbarObjects;
+	private CentersButton centersButton;
 	
 	private List<CanvasObject> selectedObjects;
 
 	private List<CanvasObject> insideFrame;
 	private List<CanvasObject> tempFrame;
-	
 	
 	public Editor() {
 		commander = new Commander();
@@ -67,12 +67,13 @@ public class Editor extends GameObject {
 		
 		toolbarObjects = new ArrayList<GameObject>();
 		int i = 0;
-		toolbarObjects.add(new ToolbarObject(this, BlockObject.WALL, toolBarX + i * GameSettings.blockWidth, toolBarY));
+		toolbarObjects.add(new ToolbarObject(this, BlockObject.WALL, toolBarX + i * GameSettings.blockWidth + 3 * i, toolBarY));
 		i++;
-		toolbarObjects.add(new ToolbarObject(this, BlockObject.TRAP, toolBarX + i * GameSettings.blockWidth, toolBarY));
+		toolbarObjects.add(new ToolbarObject(this, BlockObject.TRAP, toolBarX + i * GameSettings.blockWidth + 3 * i, toolBarY));
 		i++;
-		toolbarObjects.add(new ToolbarObject(this, BlockObject.OBJECTIVE, toolBarX + i * GameSettings.blockWidth, toolBarY));
+		toolbarObjects.add(new ToolbarObject(this, BlockObject.OBJECTIVE, toolBarX + i * GameSettings.blockWidth + 3 * i, toolBarY));
 		i++;
+		centersButton = new CentersButton(this, Game.getVirtualWidth() - 3 * CentersButton.radius, Editor.toolBarY);
 		
 		selectedObjects = new ArrayList<CanvasObject>();
 		insideFrame = new ArrayList<CanvasObject>();
@@ -95,9 +96,9 @@ public class Editor extends GameObject {
 		}
 		for (GameObject obj : toolbarObjects)
 			obj.draw();
+		centersButton.draw();
 		if (dragging)
 			ShapeDrawer.drawRect(touchDownX, touchDownY, currentX - touchDownX, currentY - touchDownY, Color.green(), false, false);
-		Rotator.instance.draw();
 	}
 
 	@Override
@@ -215,7 +216,7 @@ public class Editor extends GameObject {
 	}
 
 	public void canvasCenterTapped(CanvasCenter canvasCenter) {
-		if (canvasCenter.isActive())
+		if (canvasCenter.isTurnedOn())
 			commander.doCommand(new RemoveCanvasCenter(canvasCenter));
 		else {
 			if (centerIsAllowed(canvasCenter))
@@ -274,6 +275,14 @@ public class Editor extends GameObject {
 			}
 			obj.updateIndices(newX, newY);
 			canvas.add(obj);
+		}
+	}
+
+	public void centerButtonTapped() {
+		for (int i = 0; i < rows-1; i++) {
+			for (int j = 0; j < cols-1; j++) {
+				centers[i][j].switchActivated();
+			}
 		}
 	}
 }

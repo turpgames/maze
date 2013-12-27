@@ -3,13 +3,12 @@ package com.turpgames.editor;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.turpgames.framework.v0.impl.GameObject;
 import com.turpgames.framework.v0.util.Color;
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.framework.v0.util.Rotation;
 import com.turpgames.framework.v0.util.ShapeDrawer;
-import com.turpgames.maze.model.MazeGameObject;
 
-public class CanvasCenter extends MazeGameObject {	
+public class CanvasCenter extends GameObject {	
 	private static final float radius = 5f;
 	
 	private Editor parent;
@@ -18,6 +17,7 @@ public class CanvasCenter extends MazeGameObject {
 	private List<CanvasObject> children;
 
 	private boolean isActive;
+	private boolean isTurnedOn;
 	public CanvasCenter(Editor parent, int xIndex, int yIndex) {
 		this.parent = parent;
 		this.xIndex = xIndex;
@@ -30,7 +30,6 @@ public class CanvasCenter extends MazeGameObject {
 		getRotation().origin.x = originX;
 		getRotation().origin.y = originY;
 		getLocation().set(originX, originY);
-		listenInput(true);
 	}
 
 	public int getXIndex() {
@@ -46,36 +45,24 @@ public class CanvasCenter extends MazeGameObject {
 		this.children.addAll(children);
 	}
 	
-//	public void anchorChildren() {
-//		for (CanvasObject obj : children)
-//			obj.anchorRotation(getRotation());
-//	}
-//	
-//	public void deanchorChildren() {
-//		for (CanvasObject obj : children)
-//			obj.deanchorRotation();
-//	}
-	
 	public void activate() {
-		if (children.size() == 0)
-			return;
-		Rotator.instance.registerCanvasCenter(this);
 		isActive = true;
+		listenInput(true);
 	}
 	
 	public void deactivate() {
-		Rotator.instance.unregisterCanvasCenter(this);
 		isActive = false;
+		listenInput(false);
 	}
 	
 	@Override
 	public void draw() {
-		if (isActive)
-			ShapeDrawer.drawCircle(getLocation().x, getLocation().y, radius + 3, Color.green(), true, false);
-		else if (isTouched())
+		if (isTouched())
 			ShapeDrawer.drawCircle(getLocation().x, getLocation().y, radius + 3, Color.white(), true, false);
-		else
-			ShapeDrawer.drawCircle(getLocation().x, getLocation().y, radius, Color.blue(), true, false);
+		else if (isTurnedOn)
+			ShapeDrawer.drawCircle(getLocation().x, getLocation().y, radius + 2, Color.blue(), true, false);
+		else if (isActive)
+			ShapeDrawer.drawCircle(getLocation().x, getLocation().y, radius, Color.white(), true, false);
 	}
 	
 	@Override
@@ -105,25 +92,28 @@ public class CanvasCenter extends MazeGameObject {
 		return isActive;
 	}
 
-	public void finishedRotating(int rotationDirection) {
-		parent.canvasCenterRotated(this, rotationDirection);
-	}
-
 	public List<CanvasObject> getChildren() {
 		return children;
 	}
-	
-	@Override
-	public void anchorRotation(Rotation rotation) {
-		getRotation().angle = rotation.angle;
-		for (CanvasObject obj : children)
-			obj.anchorRotation(getRotation());
+
+	public void turnOn() {
+		if (children.size() == 0)
+			return;
+		isTurnedOn = true;
 	}
-	
-	@Override
-	public void deanchorRotation() {
-		for (CanvasObject obj : children)
-			obj.deanchorRotation();
-		super.deanchorRotation();
+
+	public void turnOff() {
+		isTurnedOn = false;
+	}
+
+	public void switchActivated() {
+		if (isActive)
+			deactivate();
+		else
+			activate();
+	}
+
+	public boolean isTurnedOn() {
+		return isTurnedOn;
 	}
 }

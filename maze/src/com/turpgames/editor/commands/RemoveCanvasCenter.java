@@ -12,11 +12,11 @@ public class RemoveCanvasCenter implements ICommand {
 	
 	@Override
 	public void doCommand() {
-		center.deactivate();
+		center.turnOff();
 	}
 
 	@Override
 	public void undoCommand() {
-		center.activate();
+		center.turnOn();
 	}
 }
