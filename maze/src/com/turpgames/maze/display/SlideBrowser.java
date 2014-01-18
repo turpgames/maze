@@ -5,7 +5,7 @@ import java.util.List;
 
 import com.turpgames.framework.v0.impl.GameObject;
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.framework.v0.util.Utils;
+import com.turpgames.framework.v0.util.GameUtils;
 
 public class SlideBrowser extends GameObject {
 
@@ -128,7 +128,7 @@ public class SlideBrowser extends GameObject {
 	}
 
 	private boolean isInputInCurrentItem(float x, float y) {
-		if (Utils.isIn(x, y, items.get(currentIndex)))
+		if (GameUtils.isIn(x, y, items.get(currentIndex)))
 			return true;
 		return false;
 	}

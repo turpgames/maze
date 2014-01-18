@@ -32,7 +32,7 @@
 
         <param
             key="default-screen"
-            value="editor-screen" />
+            value="slider-test" />
 
         <param
             key="screen-switcher"
@@ -170,6 +170,12 @@
             <texture
                 id="rotationSignRight"
                 path="maze/right.png" />
+            
+            <texture
+                id="demoButton"
+                path="demo.png">
+                
+            </texture>
 
         </textures>
 

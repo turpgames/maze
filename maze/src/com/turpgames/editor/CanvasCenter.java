@@ -14,18 +14,20 @@ public class CanvasCenter extends GameObject {
 	private Editor parent;
 	private int xIndex;
 	private int yIndex;
+	private boolean isMiddle;
 	private List<CanvasObject> children;
 
 	private boolean isActive;
 	private boolean isTurnedOn;
-	public CanvasCenter(Editor parent, int xIndex, int yIndex) {
+	public CanvasCenter(Editor parent, int xIndex, int yIndex, boolean isMiddle) {
 		this.parent = parent;
 		this.xIndex = xIndex;
 		this.yIndex = yIndex;
+		this.isMiddle = isMiddle;
 		this.children = new ArrayList<CanvasObject>();
 		
-		float originX = Editor.tx + (xIndex + 1) * Editor.blockWidth;
-		float originY = Editor.ty + (yIndex + 1) * Editor.blockHeight;
+		float originX = Editor.tx + (xIndex + 1) * Editor.blockWidth + (this.isMiddle ? Editor.blockWidth / 2 : 0);
+		float originY = Editor.ty + (yIndex + 1) * Editor.blockHeight + (this.isMiddle ? Editor.blockHeight / 2 : 0);
 		
 		getRotation().origin.x = originX;
 		getRotation().origin.y = originY;

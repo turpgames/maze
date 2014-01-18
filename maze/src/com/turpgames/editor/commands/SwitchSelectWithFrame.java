@@ -19,16 +19,28 @@ public class SwitchSelectWithFrame implements ICommand {
 	@Override
 	public void doCommand() {
 		for (CanvasObject obj : insideFrame) {
-			obj.setSelected(!obj.isSelected());
-			selectedObjects.add(obj);
+			if (obj.isSelected()) {
+				obj.setSelected(false);
+				selectedObjects.remove(obj);
+			}
+			else {
+				obj.setSelected(true);
+				selectedObjects.add(obj);
+			}
 		}
 	}
 
 	@Override
 	public void undoCommand() {
 		for (CanvasObject obj : insideFrame) {
-			obj.setSelected(!obj.isSelected());
-			selectedObjects.remove(obj);
+			if (obj.isSelected()) {
+				obj.setSelected(false);
+				selectedObjects.remove(obj);
+			}
+			else {
+				obj.setSelected(true);
+				selectedObjects.add(obj);
+			}
 		}
 	}
 

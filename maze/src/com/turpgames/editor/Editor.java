@@ -1,7 +1,9 @@
 package com.turpgames.editor;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import com.badlogic.gdx.Input.Keys;
 import com.turpgames.editor.commands.AddCanvasCenter;
@@ -12,10 +14,16 @@ import com.turpgames.editor.commands.SelectCanvasObject;
 import com.turpgames.editor.commands.SetTypes;
 import com.turpgames.editor.commands.SwitchSelectWithFrame;
 import com.turpgames.editor.commands.UnselectCanvasObject;
+import com.turpgames.editor.data.MapData;
+import com.turpgames.framework.v0.component.Button;
+import com.turpgames.framework.v0.component.IButtonListener;
+import com.turpgames.framework.v0.component.ImageButton;
 import com.turpgames.framework.v0.impl.GameObject;
+import com.turpgames.framework.v0.impl.ScreenManager;
 import com.turpgames.framework.v0.util.Color;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.framework.v0.util.ShapeDrawer;
+import com.turpgames.maze.utils.R;
 import com.turpgames.maze.model.blocks.BlockObject;
 import com.turpgames.maze.utils.GameSettings;
 
@@ -38,10 +46,12 @@ public class Editor extends GameObject {
 	public static final int LAYER_ROTATOR = Game.LAYER_GAME + 4;
 	
 	private Commander commander;
-	private List<CanvasObject> canvas;
-	private CanvasCenter[][] centers;
+	private Map<Coordinates, CanvasObject> canvas;
+	private List<CanvasCenter> centers;
+	
 	private List<GameObject> toolbarObjects;
 	private CentersButton centersButton;
+	private ImageButton demoButton;
 	
 	private List<CanvasObject> selectedObjects;
 
@@ -50,20 +60,23 @@ public class Editor extends GameObject {
 	
 	public Editor() {
 		commander = new Commander();
-		canvas = new ArrayList<CanvasObject>();
+		canvas = new HashMap<Coordinates, CanvasObject>();
+		CanvasObject cue;
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				canvas.add(new CanvasObject(this, i, j));
+				cue = new CanvasObject(this, i, j);
+				canvas.put(cue.getCoordinates(), cue);
 			}
 		}
 		
-		centers = new CanvasCenter[rows-1][cols-1];
+		centers = new ArrayList<CanvasCenter>();
 		for (int i = 0; i < rows-1; i++) {
 			for (int j = 0; j < cols-1; j++) {
-				centers[i][j] = new CanvasCenter(this, i, j);
+				centers.add(new CanvasCenter(this, i, j, false));
+				if (i < rows - 2 && j < cols -2)
+					centers.add(new CanvasCenter(this, i, j, true));
 			}
 		}
-		
 		
 		toolbarObjects = new ArrayList<GameObject>();
 		int i = 0;
@@ -74,6 +87,19 @@ public class Editor extends GameObject {
 		toolbarObjects.add(new ToolbarObject(this, BlockObject.OBJECTIVE, toolBarX + i * GameSettings.blockWidth + 3 * i, toolBarY));
 		i++;
 		centersButton = new CentersButton(this, Game.getVirtualWidth() - 3 * CentersButton.radius, Editor.toolBarY);
+		demoButton = new ImageButton(64f,64f,"demoButton");
+		demoButton.setLocation(Button.AlignNE, 10, 10);
+		demoButton.setListener(new IButtonListener() {
+			
+			@Override
+			public void onButtonTapped() {
+				MapData mapData = new MapData(canvas, centers);
+				mapData.write("demo/demo.map");
+				
+				//Change to MazeTestScreen 
+//				ScreenManager.instance.switchTo(R.game.screens.mazeTest, false);
+			}
+		});
 		
 		selectedObjects = new ArrayList<CanvasObject>();
 		insideFrame = new ArrayList<CanvasObject>();
@@ -87,16 +113,15 @@ public class Editor extends GameObject {
 
 	@Override
 	public void draw() {
-		for (CanvasObject obj : canvas)
+		for (CanvasObject obj : canvas.values())
 			obj.draw();
-		for (int i = 0; i < rows-1; i++) {
-			for (int j = 0; j < cols-1; j++) {
-				centers[i][j].draw();
-			}
+		for (CanvasCenter center : centers) {
+			center.draw();
 		}
 		for (GameObject obj : toolbarObjects)
 			obj.draw();
 		centersButton.draw();
+		demoButton.draw();
 		if (dragging)
 			ShapeDrawer.drawRect(touchDownX, touchDownY, currentX - touchDownX, currentY - touchDownY, Color.green(), false, false);
 	}
@@ -150,7 +175,7 @@ public class Editor extends GameObject {
 		}
 		
 		tempFrame.clear();
-		for (CanvasObject obj : canvas) {
+		for (CanvasObject obj : canvas.values()) {
 			if (obj.indicesBetween(Math.min(touchDownRow, currentRow), Math.max(touchDownRow, currentRow), Math.min(touchDownCol, currentCol), Math.max(touchDownCol, currentCol))) {
 				tempFrame.add(obj);
 				obj.setSelected(!obj.isSelected());	
@@ -225,64 +250,92 @@ public class Editor extends GameObject {
 	}
 
 	private boolean centerIsAllowed(CanvasCenter canvasCenter) {
-//		int centerX = canvasCenter.getXIndex() + 1;
-//		int centerY = canvasCenter.getYIndex() + 1;
-//		int rotationDirection = 1;
-//		
-//		int newX, newY;
-//		for (CanvasObject obj : selectedObjects) {
-//			newX = obj.getXIndex();
-//			newY = obj.getYIndex();
-//			for (int i = 0; i < 3; i++) {
-//				newX = centerX - rotationDirection*(newY - centerY) - (rotationDirection == 1 ? 1 : 0);
-//				newY = centerY + rotationDirection*(newX - centerX) - (rotationDirection != 1 ? 1 : 0);
-//				
-//				if (indicesOutBounds(newX, newY)) {
-//					return false;
-//				}
-//				if (canvas[newX][newY].getType() != BlockObject.NONE) {
-//					if (!selectedObjects.contains(canvas[newX][newY])) {
-//						return false;
-//					}
-//					return false;
-//				}
-//				
-//			}
-//		}
+		for (CanvasCenter existing : centers) {
+			if (existing.isTurnedOn()) {
+				for (CanvasObject obj : existing.getChildren()) {
+					if (selectedObjects.contains(obj))
+						return false;
+				}
+			}
+		}
 		
-		return true;
-	}
-
-	private boolean indicesOutBounds(int newX, int newY) {
-		return !(newX < rows && newX >= 0 && newY < cols && newY >= 0);
-	}
-
-	public void canvasCenterRotated(CanvasCenter canvasCenter, int rotationDirection) {
 		int centerX = canvasCenter.getXIndex() + 1;
 		int centerY = canvasCenter.getYIndex() + 1;
 		
-		List<CanvasObject> children = canvasCenter.getChildren();
-		int newX, newY;
-		canvas.removeAll(children);
-		for (CanvasObject obj : children) {
-			newX = centerX - rotationDirection*(obj.getYIndex() - centerY) - (rotationDirection == 1 ? 1 : 0);
-			newY = centerY + rotationDirection*(obj.getXIndex() - centerX) - (rotationDirection != 1 ? 1 : 0);
-			for (int i = canvas.size() - 1; i >= 0; i--){
-				if (canvas.get(i).getXIndex() == newX && canvas.get(i).getYIndex() == newY) {
-					canvas.remove(canvas.get(i));
-					canvas.add(new CanvasObject(this, obj.getXIndex(), obj.getYIndex()));
-				}
-			}
-			obj.updateIndices(newX, newY);
-			canvas.add(obj);
+		int maxX = -1, minX = rows, maxY = -1, minY = cols;
+		for (CanvasObject obj : selectedObjects) {
+			if (obj.getCoordinates().getX() < minX)
+				minX = obj.getCoordinates().getX();
+			if (obj.getCoordinates().getX() > maxX)
+				maxX = obj.getCoordinates().getX();
+			if (obj.getCoordinates().getY() < minY)
+				minY = obj.getCoordinates().getY();
+			if (obj.getCoordinates().getY() > maxY)
+				maxY = obj.getCoordinates().getY();
 		}
+		// 180 degree rotations
+		if (indexXOutBounds(centerX - (maxX - centerX) - 1))
+			return outOfBounds();
+		if (indexXOutBounds(centerX - (minX - centerX) - 1))
+			return outOfBounds();
+		if (indexYOutBounds(centerY - (maxY - centerY) - 1))
+			return outOfBounds();
+		if (indexYOutBounds(centerY - (minY - centerY) - 1))
+			return outOfBounds();
+		
+		// 90 degree rotations
+		if (indexXOutBounds(centerX + (maxY - centerY)))
+			return outOfBounds();
+		if (indexXOutBounds(centerX - (maxY - centerY) - 1))
+			return outOfBounds();
+		if (indexYOutBounds(centerY + (maxX - centerX)))
+			return outOfBounds();
+		if (indexYOutBounds(centerY - (maxX - centerX) - 1))
+			return outOfBounds();
+
+		if (indexXOutBounds(centerX + (minY - centerY)))
+			return outOfBounds();
+		if (indexXOutBounds(centerX - (minY - centerY) - 1))
+			return outOfBounds();
+		if (indexYOutBounds(centerY + (minX - centerX)))
+			return outOfBounds();
+		if (indexYOutBounds(centerY - (minX - centerX) - 1))
+			return outOfBounds();
+		
+		int reach = Math.max(maxX + 1 - centerX, Math.max(centerX - minX, Math.max(maxY + 1 - centerY, centerY - minY)));
+		Coordinates cue = new Coordinates();
+		CanvasObject canvasCue;
+		for (int x = centerX - reach; x < centerX + reach; x++) {
+			for (int y = centerY - reach; y < centerY + reach; y++) {
+				cue.setX(x);
+				cue.setY(y);
+				canvasCue = canvas.get(cue);
+				if (canvasCue.getType() != BlockObject.NONE && !selectedObjects.contains(canvasCue))
+					return conflictsExistingBlocks();
+			}
+		}
+		return true;
+	}
+	
+	private boolean outOfBounds() {
+		return false;
 	}
 
+	private boolean conflictsExistingBlocks() {
+		return false;
+	}
+	
+	private boolean indexXOutBounds(int x) {
+		return !(x < rows && x >= 0);
+	}
+	
+	private boolean indexYOutBounds(int y) {
+		return !(y < cols && y >= 0);
+	}
+	
 	public void centerButtonTapped() {
-		for (int i = 0; i < rows-1; i++) {
-			for (int j = 0; j < cols-1; j++) {
-				centers[i][j].switchActivated();
-			}
+		for (CanvasCenter center : centers) {
+			center.switchActivated();
 		}
 	}
 }

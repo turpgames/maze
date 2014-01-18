@@ -8,8 +8,7 @@ import com.turpgames.maze.model.blocks.BlockObject;
 public class CanvasObject extends BlockObject {
 	private boolean selected;
 	private Editor parent;
-	private int xIndex;
-	private int yIndex;
+	private Coordinates coordinates;
 	
 	public CanvasObject(Editor parent, int xIndex, int yIndex) {
 		this(parent, BlockObject.NONE, xIndex, yIndex);
@@ -18,8 +17,7 @@ public class CanvasObject extends BlockObject {
 	private CanvasObject(Editor parent, int type, int xIndex, int yIndex) {
 		super(type, Editor.tx + xIndex * Editor.blockWidth, Editor.ty + yIndex * Editor.blockHeight);
 		this.parent = parent;
-		this.xIndex = xIndex;
-		this.yIndex = yIndex;
+		this.coordinates = new Coordinates(xIndex, yIndex);
 		setWidth(Editor.blockWidth);
 		setHeight(Editor.blockHeight);
 		listenInput(true);
@@ -32,10 +30,10 @@ public class CanvasObject extends BlockObject {
 			ShapeDrawer.drawRect(this, false);
 		if (selected)
 			ShapeDrawer.drawRect(
-					getLocation().x + getWidth() / 3, 
-					getLocation().y + getHeight() / 3, 
-					getWidth() - 2 * getWidth() / 3, 
-					getHeight() - 2 * getHeight() / 3, Color.green(), true, false);
+					getLocation().x + getWidth() / 4, 
+					getLocation().y + getHeight() / 4, 
+					getWidth() - getWidth() / 2, 
+					getHeight() - getHeight() / 2, Color.green(), false, false);
 	}
 	
 	@Override
@@ -57,23 +55,19 @@ public class CanvasObject extends BlockObject {
 		this.selected = selected;
 	}
 	
-	public int getXIndex() {
-		return xIndex;
+	public Coordinates getCoordinates() {
+		return coordinates;
 	}
 	
-	public int getYIndex() {
-		return yIndex;
-	}
-	
-	public void updateIndices(int x, int y) {
-		xIndex = x;
-		yIndex = y;
+	public void updateCoordinates(int x, int y) {
+		this.coordinates.setX(x);
+		this.coordinates.setY(y);
 
-		getLocation().x = Editor.tx + xIndex * Editor.blockWidth;
-		getLocation().y = Editor.ty + yIndex * Editor.blockHeight;
+		getLocation().x = Editor.tx + coordinates.getX() * Editor.blockWidth;
+		getLocation().y = Editor.ty + coordinates.getY() * Editor.blockHeight;
 	}
 
 	public boolean indicesBetween(int minX, int maxX, int minY, int maxY) {
-		return xIndex >= minX && xIndex <= maxX && yIndex >= minY && yIndex <= maxY;
+		return coordinates.getX() >= minX && coordinates.getX() <= maxX && coordinates.getY() >= minY && coordinates.getY() <= maxY;
 	}
 }
