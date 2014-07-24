@@ -2,7 +2,6 @@ package com.turpgames.maze.model;
 
 import com.turpgames.framework.v0.impl.GameObject;
 import com.turpgames.framework.v0.util.Rotation;
-import com.turpgames.framework.v0.util.Vector;
 
 public abstract class MazeGameObject extends GameObject {
 

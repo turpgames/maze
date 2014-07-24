@@ -32,7 +32,7 @@
 
         <param
             key="default-screen"
-            value="slider-test" />
+            value="splash" />
 
         <param
             key="screen-switcher"
@@ -74,6 +74,12 @@
     <screens>
 
         <screen
+            id="splash"
+            class="com.turpgames.maze.view.SplashScreen" />
+        <screen
+            id="game"
+            class="com.turpgames.maze.view.GameScreen" />
+        <screen
             id="slider-test"
             class="com.turpgames.maze.view.SliderTestScreen" />
         <screen
@@ -91,27 +97,34 @@
     
     <animations>
         <animation
+            id="loading"
+            frame-duration="0.040"
+            frame-height="74"
+            frame-width="74"
+            loop="true"
+            texture="loading" />
+       <animation
             id="fell_on_trap"
             texture="fell_on_trap"
-            duration="0.15f"
-            width="40"
-            height="40"
+            frame-duration="0.150"
+            frame-height="40"
+            frame-width="40"
             looping="false" />
         
         <animation
             id="fell_on_objective"
             texture="fell_on_objective"
-            duration="0.1f"
-            width="40"
-            height="40"
+            frame-duration="0.100"
+            frame-height="40"
+            frame-width="40"
             looping="false" />
         
         <animation
             id="fell_on_portal"
             texture="fell_on_portal"
-            duration="0.15f"
-            width="40"
-            height="40"
+            frame-duration="0.150"
+            frame-height="40"
+            frame-width="40"
             looping="false" />
         
     </animations>
@@ -132,50 +145,69 @@
         </fonts>
 
         <textures>
+            <texture
+                id="turp_logo"
+                path="img/turpgames_logo.png"
+                resource-load="primary" />
+
+            <texture
+                id="loading"
+                path="img/loading.png" />
+
+            <texture
+                id="fw_close"
+                path="img/framework/close.png" />
+
+            <texture
+                id="tb_back"
+                path="img/toolbar/back.png" />
+
+            <texture
+                id="tb_sound_off"
+                path="img/toolbar/sound-off.png" />
+
+            <texture
+                id="tb_sound_on"
+                path="img/toolbar/sound-on.png" />
+            
             
             <texture
                 id="fell_on_trap"
-                path="maze/fell_on_trap.png" />
+                path="img/game/fell_on_trap.png" />
             <texture
                 id="fell_on_objective"
-                path="maze/fell_on_objective.png" />
+                path="img/game/fell_on_objective.png" />
             <texture
                 id="fell_on_portal"
-                path="maze/fell_on_portal.png" />
+                path="img/game/fell_on_portal.png" />
             <texture
                 id="lokum"
-                path="maze/lokum.png" />
+                path="img/game/lokum.png" />
             
             <texture
                 id="trap"
-                path="maze/trap.png" />
+                path="img/game/trap.png" />
             
             <texture
                 id="objective"
-                path="maze/door.gif" />
+                path="img/game/door.gif" />
             
             <texture
                 id="wall"
-                path="maze/body_full40-2.png" />
+                path="img/game/body_full40-2.png" />
             
             
             <texture
                 id="rotationSignTemp"
-                path="maze/temp.png" />
+                path="img/game/temp.png" />
             
             <texture
                 id="rotationSignLeft"
-                path="maze/left.png" />
+                path="img/game/left.png" />
             
             <texture
                 id="rotationSignRight"
-                path="maze/right.png" />
-            
-            <texture
-                id="demoButton"
-                path="demo.png">
-                
-            </texture>
+                path="img/game/right.png" />
 
         </textures>
 

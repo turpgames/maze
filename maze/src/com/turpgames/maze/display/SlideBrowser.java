@@ -44,7 +44,6 @@ public class SlideBrowser extends GameObject {
 		return elapsedReturn < durationReturn;
 	}
 	
-	float p;
 	@Override
 	public void draw() {
 		if (items.size() == 0)
@@ -135,13 +134,13 @@ public class SlideBrowser extends GameObject {
 	
 	private void lifted() {
 		elapsedReturn = 0;
-		if(slideDx > switchThreshold) { // go forward
+		if(slideDx > switchThreshold && currentIndex < items.size()) { // go forward
 			slideDx -= switchThreshold;
 			int tmp = (int) (slideDx / Game.getVirtualWidth()) + 1;
 			currentIndex += tmp;
 			slideDx += - tmp * Game.getVirtualWidth() + switchThreshold;
 		}
-		else if (slideDx < -switchThreshold) { // go backward
+		else if (slideDx < -switchThreshold && currentIndex > 0) { // go backward
 			slideDx += switchThreshold;
 			int tmp = (int) (slideDx / Game.getVirtualWidth()) - 1;
 			currentIndex += tmp;

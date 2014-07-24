@@ -4,9 +4,16 @@ import com.turpgames.framework.v0.util.Color;
 import com.turpgames.framework.v0.util.FontManager;
 
 public final class R {
-	/**
-	 * game.xml yapýsýndaki id ve key'ler
-	 */
+
+	public static final class screens {
+		public static final String game = "game";
+		public static final String about = "about";
+		public static final String hiscores = "hiscores";
+		public static final String help = "help";
+		public static final String menu = "menu";
+		public static final String levels = "levels";
+	}
+	
 	public static final class game {
 		public static final class controls {
 			public static final class mainMenu {
@@ -99,6 +106,8 @@ public final class R {
 	}
 
 	public static final class strings {
+
+		public static String demoMapPath = "demo/demo_level.map";
 	
 	}
 

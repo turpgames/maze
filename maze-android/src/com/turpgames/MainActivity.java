@@ -1,35 +1,14 @@
 package com.turpgames;
 
-import android.os.Bundle;
-import android.view.WindowManager;
-
-import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.turpgames.framework.v0.impl.android.AndroidProvider;
-import com.turpgames.framework.v0.impl.libgdx.GdxGame;
-import com.turpgames.framework.v0.util.Game;
+import com.turpgames.framework.v0.android.AndroidGameActivity;
 
-public class MainActivity extends AndroidApplication {
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-    	super.onCreate(savedInstanceState);
-		getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+public class MainActivity extends AndroidGameActivity {
+	@Override
+	protected AndroidApplicationConfiguration getAndroidApplicationConfiguration() {
 		AndroidApplicationConfiguration cfg = new AndroidApplicationConfiguration();
-		cfg.useGL20 = false;
 		cfg.useAccelerometer = false;
 		cfg.useCompass = false;
-		
-		AndroidProvider prov = AndroidProvider.getInstance();
-		prov.init(this, savedInstanceState);
-		
-		Game.setEnvironmentProvider(prov);
-		
-		initialize(new GdxGame(), cfg);
-	}
-
-	@Override
-	protected void onDestroy() {
-		super.onDestroy();
-		System.exit(0);
+		return cfg;
 	}
 }
