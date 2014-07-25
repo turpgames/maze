@@ -4,6 +4,7 @@ import com.turpgames.framework.v0.impl.Screen;
 import com.turpgames.framework.v0.impl.ScreenManager;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.maze.components.Toolbar;
+import com.turpgames.maze.components.ToolbarListenerAdapter;
 import com.turpgames.maze.controller.GameController;
 import com.turpgames.maze.controller.Global;
 import com.turpgames.maze.level.LevelPack;
@@ -28,7 +29,7 @@ public class GameScreen extends Screen implements IScreenView {
 		super.onAfterActivate();
 		controller.activate();
 		Toolbar.getInstance().enable();
-		Toolbar.getInstance().setListener(new com.turpgames.framework.v0.component.Toolbar.IToolbarListener() {
+		Toolbar.getInstance().setListener(new ToolbarListenerAdapter() {
 			@Override
 			public void onToolbarBack() {
 				onBack();
