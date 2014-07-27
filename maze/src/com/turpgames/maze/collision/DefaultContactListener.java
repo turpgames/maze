@@ -1,11 +1,9 @@
 package com.turpgames.maze.collision;
 
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactImpulse;
-import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Manifold;
+import com.turpgames.box2d.IContact;
+import com.turpgames.box2d.IContactListener;
 
-public class DefaultContactListener implements ContactListener {
+public class DefaultContactListener implements IContactListener {
 	private final ICollisionHandler collisionHandler;
 	
 	public DefaultContactListener(ICollisionHandler collisionHandler) {
@@ -13,9 +11,9 @@ public class DefaultContactListener implements ContactListener {
 	}
 	
 	@Override
-	public void endContact(Contact contact) {
-		Object o1 = contact.getFixtureA().getBody().getUserData();
-		Object o2 = contact.getFixtureB().getBody().getUserData();
+	public void endContact(IContact contact) {
+		Object o1 = contact.getFixtureA().getBody().getData();
+		Object o2 = contact.getFixtureB().getBody().getData();
 
 		if (o1 == null || o2 == null) {
 			return;
@@ -25,9 +23,9 @@ public class DefaultContactListener implements ContactListener {
 	}
 
 	@Override
-	public void beginContact(Contact contact) {
-		Object o1 = contact.getFixtureA().getBody().getUserData();
-		Object o2 = contact.getFixtureB().getBody().getUserData();
+	public void beginContact(IContact contact) {
+		Object o1 = contact.getFixtureA().getBody().getData();
+		Object o2 = contact.getFixtureB().getBody().getData();
 
 		if (o1 == null || o2 == null) {
 			return;
@@ -35,15 +33,4 @@ public class DefaultContactListener implements ContactListener {
 
 		collisionHandler.onBeginCollide(o1, o2);
 	}
-
-	@Override
-	public void preSolve(Contact contact, Manifold oldManifold) {
-
-	}
-
-	@Override
-	public void postSolve(Contact contact, ContactImpulse impulse) {
-
-	}
-
 }

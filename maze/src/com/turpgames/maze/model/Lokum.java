@@ -1,14 +1,11 @@
 package com.turpgames.maze.model;
 
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.turpgames.box2d.Box2D;
-import com.turpgames.box2d.Box2DWorld;
+import com.turpgames.box2d.IBody;
 import com.turpgames.box2d.IBox2DObject;
+import com.turpgames.box2d.IWorld;
+import com.turpgames.framework.v0.impl.GameObject;
 import com.turpgames.framework.v0.util.Rotation;
 import com.turpgames.framework.v0.util.Vector;
-import com.turpgames.maze.level.MazeMover;
 import com.turpgames.maze.model.blocks.RectBodyBuilder;
 import com.turpgames.maze.utils.GameSettings;
 import com.turpgames.maze.utils.Maze;
@@ -17,14 +14,14 @@ import com.turpgames.maze.utils.R;
 public class Lokum extends MazeAnimatedGameObject implements IBox2DObject {
 	private Vector startLocation;
 //	private List<ICollidable> collidedObjects;
-	protected final Body body;
+	protected final IBody body;
 
 
-	public Lokum(Box2DWorld world, Rotation rotation, float x, float y) {
+	public Lokum(IWorld world, Rotation rotation, float x, float y) {
 		this(world, rotation, x, y, GameSettings.blockWidth, GameSettings.blockHeight);
 	}
 	
-	public Lokum(Box2DWorld world, Rotation rotation, float x, float y, float width, float height) {
+	public Lokum(IWorld world, Rotation rotation, float x, float y, float width, float height) {
 		this.startLocation = new Vector();
 		this.startLocation.x = x;
 		this.startLocation.y = y;
@@ -43,7 +40,8 @@ public class Lokum extends MazeAnimatedGameObject implements IBox2DObject {
 		anchorRotation(rotation);
 
 		this.body = createBodyBuilder().build(world);
-		this.body.setUserData(this);
+		this.body.setData(this);
+		syncWithObject();
 //		collidedObjects = new ArrayList<ICollidable>();
 	}
 
@@ -129,13 +127,31 @@ public class Lokum extends MazeAnimatedGameObject implements IBox2DObject {
 
 	@Override
 	public void syncWithBody() {
-		Vector2 bodyPos = body.getPosition();
-		float x = Box2D.worldToViewportX(bodyPos.x);
-		float y = Box2D.worldToViewportY(bodyPos.y);
+		Vector bodyPos = body.getCenter();
+		float x = bodyPos.x; // Box2D.worldToViewportX(bodyPos.x);
+		float y = bodyPos.y; // Box2D.worldToViewportY(bodyPos.y);
 
 		getLocation().x = x;
 		getLocation().y = y;
-		getRotation().setRotationZ(MathUtils.radiansToDegrees * body.getAngle());
+		getRotation().setRotationZ(body.getRotation());
+	}
+
+	@Override
+	public void syncWithObject() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public GameObject getObject() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public IBody getBody() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 	/***

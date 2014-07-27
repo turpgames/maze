@@ -3,7 +3,7 @@ package com.turpgames.maze.level;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.turpgames.box2d.Box2DWorld;
+import com.turpgames.box2d.IWorld;
 import com.turpgames.framework.v0.impl.AnimatedGameObject;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.maze.controller.Global;
@@ -40,7 +40,7 @@ public class Level extends MazeGameObject {
 //	private List<CollisionGroup> collisionGroups;
 
 	List<AnimatedGameObject> animatedObjects;
-	public Level(Box2DWorld world, ILevelListener listener, IScreenView view) {
+	public Level(IWorld world, ILevelListener listener, IScreenView view) {
 		this.listener = listener;
 		
 		rotationSign = new RotationSign((Game.getVirtualWidth() - R.ui.rotationSignWidth) / 2, 

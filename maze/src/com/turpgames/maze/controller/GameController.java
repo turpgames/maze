@@ -3,7 +3,8 @@ package com.turpgames.maze.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.turpgames.box2d.Box2DWorld;
+import com.turpgames.box2d.Box2D;
+import com.turpgames.box2d.IWorld;
 import com.turpgames.framework.v0.IDrawable;
 import com.turpgames.framework.v0.impl.Text;
 import com.turpgames.framework.v0.util.Game;
@@ -13,7 +14,7 @@ import com.turpgames.maze.view.IScreenView;
 
 public class GameController implements ILevelListener {
 	private final IScreenView view;
-	private Box2DWorld world;
+	private IWorld world;
 
 	private boolean isPlaying;
 	private boolean isGameOver;
@@ -31,7 +32,7 @@ public class GameController implements ILevelListener {
 	}
 
 	public void activate() {
-		world = new Box2DWorld();
+		world = Box2D.createWorld();
 		Global.currentGame = this;
 		
 		text = new Text();
@@ -60,8 +61,7 @@ public class GameController implements ILevelListener {
 		
 		isPlaying = false;
 
-		world.getWorld().dispose();
-		world = null;
+		world.dispose();
 		for (IDrawable d : drawables)
 			view.unregisterDrawable(d);
 		drawables.clear();
