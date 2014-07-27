@@ -1,58 +1,62 @@
 package com.turpgames.maze.view;
 
+import com.turpgames.box2d.Box2D;
+import com.turpgames.box2d.IWorld;
+import com.turpgames.framework.v0.IDrawable;
 import com.turpgames.framework.v0.impl.Screen;
-import com.turpgames.framework.v0.impl.ScreenManager;
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.maze.components.Toolbar;
-import com.turpgames.maze.components.ToolbarListenerAdapter;
-import com.turpgames.maze.controller.GameController;
-import com.turpgames.maze.controller.Global;
-import com.turpgames.maze.level.LevelPack;
-import com.turpgames.maze.level.StarterPack;
-import com.turpgames.maze.utils.R;
+import com.turpgames.maze.mehmet.Maze;
 
-public class GameScreen extends Screen implements IScreenView {
+public class GameScreen extends Screen {
+	private IWorld world;
+	private Maze maze;
 
-	private GameController controller;
-
+	@Override
 	public void init() {
 		super.init();
+
+		world = Box2D.createWorld();
 		
-		LevelPack pack = StarterPack.createPack();
-		Global.levelMeta = pack.getLevels()[0];
-		controller = new GameController(this);
-		registerDrawable(Toolbar.getInstance(), Game.LAYER_INFO);
-	}
+		maze = new Maze(world);
 
-	@Override
-	protected void onAfterActivate() {
-		super.onAfterActivate();
-		controller.activate();
-		Toolbar.getInstance().enable();
-		Toolbar.getInstance().setListener(new ToolbarListenerAdapter() {
+		registerDrawable(new IDrawable() {
 			@Override
-			public void onToolbarBack() {
-				onBack();
+			public void draw() {
+				world.drawDebug();
 			}
-		});
+		}, Game.LAYER_GAME);
+		
+//		registerInputListener(this);
 	}
-
-	@Override
-	protected boolean onBeforeDeactivate() {
-		controller.deactivate();
-		Toolbar.getInstance().disable();
-		return super.onBeforeDeactivate();
-	}
-
+	
 	@Override
 	public void update() {
 		super.update();
-		controller.update();
+		if (isActive())
+			world.update();
 	}
-
+	
 	@Override
-	protected boolean onBack() {
-		ScreenManager.instance.switchTo(R.screens.levels, true);
-		return true;
+	public void draw() {
+		maze.drawSq();
+		super.draw();
+	}
+	
+	@Override
+	public boolean touchDown(float x, float y, int pointer, int button) {
+		maze.beginRotate(x, y);
+		return super.touchUp(x, y, pointer, button);
+	}
+	
+	@Override
+	public boolean touchDragged(float x, float y, int pointer) {
+		maze.rotate(x, y);
+		return super.touchDragged(x, y, pointer);
+	}
+	
+	@Override
+	public boolean touchUp(float x, float y, int pointer, int button) {
+		maze.endRotate();
+		return super.touchUp(x, y, pointer, button);
 	}
 }
