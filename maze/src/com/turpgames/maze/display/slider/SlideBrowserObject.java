@@ -1,4 +1,4 @@
-package com.turpgames.maze.display;
+package com.turpgames.maze.display.slider;
 
 import com.turpgames.framework.v0.impl.GameObject;
 import com.turpgames.framework.v0.util.Game;

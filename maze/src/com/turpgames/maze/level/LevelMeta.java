@@ -6,8 +6,7 @@ import java.util.List;
 import com.turpgames.box2d.IContactListener;
 import com.turpgames.framework.v0.impl.Settings;
 import com.turpgames.framework.v0.util.Game;
-import com.turpgames.maze.model.blocks.BlockObject;
-import com.turpgames.maze.utils.GameSettings;
+import com.turpgames.maze.utils.Maze;
 
 public class LevelMeta {
 
@@ -24,8 +23,10 @@ public class LevelMeta {
 	private final int star1;
 	private final int star2;
 	private final int star3;
-	private int state;
+	private final String description;
 
+	private LevelPack pack;
+	
 	private LevelMeta(Builder builder) {
 		this.id = builder.id;
 		this.index = builder.index;
@@ -34,16 +35,23 @@ public class LevelMeta {
 		this.star3 = builder.star3;
 		this.blocks = builder.blocks.toArray(new BlockMeta[0]);
 		this.contactListener = builder.contactListener;
-		this.state = Settings.getInteger(id, Locked);
+		this.description = builder.description;
 	}
 
-	public void updateState(int state) {
-		this.state = state;
+	public LevelPack getPack() {
+		return pack;
+	}
+
+	void setPack(LevelPack pack) {
+		this.pack = pack;
+	}
+	
+	public void setState(int state) {
 		Settings.putInteger(id, state);
 	}
 
 	public int getState() {
-		return state;
+		return Settings.getInteger(id, Locked);
 	}
 
 	public int getIndex() {
@@ -58,6 +66,10 @@ public class LevelMeta {
 		return contactListener;
 	}
 
+	public String getId() {
+		return id;
+	}
+
 	public int getStar1() {
 		return star1;
 	}
@@ -68,6 +80,22 @@ public class LevelMeta {
 
 	public int getStar3() {
 		return star3;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+	
+	public boolean hasDescription() {
+		return description != null;
+	}
+	
+	public boolean isDescriptionRead() {
+		return Settings.getBoolean(id + "-read", false);
+	}
+	
+	public void setDescriptionAsRead() {
+		Settings.putBoolean(id + "-read", true);
 	}
 
 	public static Builder newBuilder(String id) {
@@ -82,6 +110,7 @@ public class LevelMeta {
 		private int star2;
 		private int star3;
 		private IContactListener contactListener;
+		private String description;
 
 		private Builder(String id) {
 			this.id = id;
@@ -98,6 +127,11 @@ public class LevelMeta {
 			return this;
 		}
 
+		public Builder setDescription(String description) {
+			this.description = description;
+			return this;
+		}
+		
 		public Builder setScoreMeta(int star3, int star2, int star1) {
 			this.star3 = star3;
 			this.star2 = star2;
@@ -108,16 +142,19 @@ public class LevelMeta {
 		public Builder addBlocks(int[][] data) {
 			int cols = data[0].length;
 			int rows = data.length;
-			int mazeWidth = cols * GameSettings.blockWidth;
-			int mazeHeight = rows * GameSettings.blockHeight;
+			int mazeWidth = cols * Maze.BLOCK_WIDTH;
+			int mazeHeight = rows * Maze.BLOCK_HEIGHT;
 
 			float tx = (Game.getVirtualWidth() - mazeWidth) / 2;
 			float ty = (Game.getVirtualHeight() - mazeHeight) / 2;
 			
 			for (int i = 0; i < rows; i++) {
 				for (int j = 0; j < cols; j++) {
-					if (data[i][j] != BlockObject.NONE) {
-						BlockMeta block = new BlockMeta(data[i][j], tx + j * GameSettings.blockWidth, ty + (rows - 1 - i) * GameSettings.blockHeight, GameSettings.blockWidth, GameSettings.blockHeight, tx + mazeWidth / 2, ty + mazeHeight / 2);
+					if (data[i][j] != Maze.BLOCK_TYPE_NONE) {
+						BlockMeta block = new BlockMeta(data[i][j], 
+								tx + j * Maze.BLOCK_WIDTH, 
+								ty + (rows - 1 - i) * Maze.BLOCK_HEIGHT, 
+								Maze.BLOCK_WIDTH, Maze.BLOCK_HEIGHT);
 						blocks.add(block);
 					}
 				}

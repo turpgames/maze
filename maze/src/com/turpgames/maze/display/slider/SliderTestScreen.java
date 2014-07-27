@@ -1,4 +1,4 @@
-package com.turpgames.maze.view;
+package com.turpgames.maze.display.slider;
 
 import com.turpgames.framework.v0.IResourceManager;
 import com.turpgames.framework.v0.component.info.FadingGameInfo;
@@ -7,8 +7,7 @@ import com.turpgames.framework.v0.impl.Text;
 import com.turpgames.framework.v0.util.Color;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.framework.v0.util.ShapeDrawer;
-import com.turpgames.maze.display.SlideBrowser;
-import com.turpgames.maze.display.SlideBrowserObject;
+import com.turpgames.maze.view.MazeScreen;
 
 public class SliderTestScreen extends MazeScreen {	
 	@Override

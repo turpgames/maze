@@ -5,22 +5,32 @@ import com.turpgames.maze.collision.DefaultContactListener;
 
 public class StarterPack {
 	private final static String packTitle = "Starter Pack";
-
-	public static LevelPack createPack() {
+	
+	private static LevelPack pack;
+	
+	public static LevelPack getPack() {
+		if (pack == null)
+			createPack();
+		return pack;
+	}
+	
+	public static void createPack() {
 		LevelMeta level1 = level1();
 
 		if (level1.getState() == LevelMeta.Locked)
-			level1.updateState(LevelMeta.Unlocked);
+			level1.setState(LevelMeta.Unlocked);
 
-		LevelPack pack = LevelPack.newBuilder()
+		pack = LevelPack.newBuilder()
 				.setTitle(packTitle)
 				.addLevel(level1)
 				.build();
 
 		for (int i = 0; i < pack.getLevels().length; i++)
-			pack.getLevels()[i].updateState(Math.max(LevelMeta.Star3 - i, LevelMeta.Unlocked));
+			pack.getLevels()[i].setState(Math.max(LevelMeta.Star3 - i, LevelMeta.Unlocked));
 
-		return pack;
+		for (LevelMeta level : pack.getLevels()) {
+			level.setPack(pack);
+		}
 	}
 
 	private static LevelMeta level1() {

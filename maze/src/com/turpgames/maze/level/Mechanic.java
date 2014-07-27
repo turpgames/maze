@@ -42,7 +42,7 @@ public class Mechanic {
 	private float mazeOldRotation; // Keeps the rotation before the user input starts.
 	public boolean onTouchDown(float x, float y) {
 		// controller.beginUserRotating(x, y);
-		mazeOldRotation = level.getRotation().angle.z;
+		mazeOldRotation = level.getRotationAngle();
 		this.rotateStartX = x;
 		this.rotateStartY = y;
 		this.userTempRotation = 0;

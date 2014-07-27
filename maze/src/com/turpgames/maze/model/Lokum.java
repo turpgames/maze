@@ -6,8 +6,6 @@ import com.turpgames.box2d.IWorld;
 import com.turpgames.framework.v0.impl.GameObject;
 import com.turpgames.framework.v0.util.Rotation;
 import com.turpgames.framework.v0.util.Vector;
-import com.turpgames.maze.model.blocks.RectBodyBuilder;
-import com.turpgames.maze.utils.GameSettings;
 import com.turpgames.maze.utils.Maze;
 import com.turpgames.maze.utils.R;
 
@@ -18,7 +16,7 @@ public class Lokum extends MazeAnimatedGameObject implements IBox2DObject {
 
 
 	public Lokum(IWorld world, Rotation rotation, float x, float y) {
-		this(world, rotation, x, y, GameSettings.blockWidth, GameSettings.blockHeight);
+		this(world, rotation, x, y, Maze.BLOCK_WIDTH, Maze.BLOCK_HEIGHT);
 	}
 	
 	public Lokum(IWorld world, Rotation rotation, float x, float y, float width, float height) {

@@ -5,7 +5,6 @@ import com.turpgames.framework.v0.IResourceManager;
 import com.turpgames.framework.v0.ITexture;
 import com.turpgames.framework.v0.util.Game;
 import com.turpgames.framework.v0.util.TextureDrawer;
-import com.turpgames.maze.model.blocks.BlockObject;
 
 public final class Maze {
 
@@ -13,6 +12,15 @@ public final class Maze {
 	public static final int R_TEMP = 1;
 	public static final int R_LEFT = 2;
 	public static final int R_RIGHT = 3;
+	
+	public static final int BLOCK_TYPE_NONE = 0;
+	public static final int BLOCK_TYPE_WALL = 1;
+	public static final int BLOCK_TYPE_OBJECTIVE = 2;
+	public static final int BLOCK_TYPE_TRAP = 3;
+	
+	public static final int BLOCK_WIDTH = 40;
+	public static final int BLOCK_HEIGHT = 40;
+
 	
 	private Maze() {
 		
@@ -30,9 +38,9 @@ public final class Maze {
 		IResourceManager r = Game.getResourceManager();
 
 		blockTextures = new ITexture[4];
-		blockTextures[BlockObject.WALL] = r.getTexture(R.game.textures.wall);
-		blockTextures[BlockObject.OBJECTIVE] = r.getTexture(R.game.textures.objective);
-		blockTextures[BlockObject.TRAP] = r.getTexture(R.game.textures.trap);
+		blockTextures[BLOCK_TYPE_WALL] = r.getTexture(R.game.textures.wall);
+		blockTextures[BLOCK_TYPE_OBJECTIVE] = r.getTexture(R.game.textures.objective);
+		blockTextures[BLOCK_TYPE_TRAP] = r.getTexture(R.game.textures.trap);
 		
 		textureRotationSignTemp = r.getTexture(R.game.textures.rotationSignTemp);
 		textureRotationSignLeft = r.getTexture(R.game.textures.rotationSignLeft);

@@ -2,33 +2,25 @@ package com.turpgames.maze.view;
 
 import com.turpgames.framework.v0.impl.Screen;
 import com.turpgames.framework.v0.impl.ScreenManager;
-import com.turpgames.framework.v0.util.Game;
 import com.turpgames.maze.components.Toolbar;
 import com.turpgames.maze.components.ToolbarListenerAdapter;
-import com.turpgames.maze.controller.GameController;
-import com.turpgames.maze.controller.Global;
-import com.turpgames.maze.level.LevelPack;
-import com.turpgames.maze.level.StarterPack;
+import com.turpgames.maze.controller.LevelSelectionController;
 import com.turpgames.maze.utils.R;
 
-public class GameScreenKadir extends Screen implements IScreenView {
-
-	private GameController controller;
+public class LevelSelectionScreen extends Screen implements IScreenView {
+	private LevelSelectionController controller;
 
 	public void init() {
 		super.init();
-		
-		LevelPack pack = StarterPack.createPack();
-		Global.levelMeta = pack.getLevels()[0];
-		controller = new GameController(this);
-		registerDrawable(Toolbar.getInstance(), Game.LAYER_INFO);
+		controller = new LevelSelectionController(this);
 	}
-
+	
 	@Override
 	protected void onAfterActivate() {
 		super.onAfterActivate();
 		controller.activate();
-		Toolbar.getInstance().enable();
+		
+		Toolbar.getInstance().activate();
 		Toolbar.getInstance().setListener(new ToolbarListenerAdapter() {
 			@Override
 			public void onToolbarBack() {
@@ -40,19 +32,13 @@ public class GameScreenKadir extends Screen implements IScreenView {
 	@Override
 	protected boolean onBeforeDeactivate() {
 		controller.deactivate();
-		Toolbar.getInstance().disable();
+		Toolbar.getInstance().deactivate();
 		return super.onBeforeDeactivate();
 	}
 
 	@Override
-	public void update() {
-		super.update();
-		controller.update();
-	}
-
-	@Override
 	protected boolean onBack() {
-		ScreenManager.instance.switchTo(R.screens.levels, true);
+		ScreenManager.instance.switchTo(R.screens.menu, true);
 		return true;
 	}
 }

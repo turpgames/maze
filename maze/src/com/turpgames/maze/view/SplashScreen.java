@@ -43,6 +43,6 @@ public class SplashScreen extends Screen {
 	}
 
 	private void switchToGame() {
-		ScreenManager.instance.switchTo(R.screens.game, false);
+		ScreenManager.instance.switchTo(R.screens.menu, false);
 	}
 }

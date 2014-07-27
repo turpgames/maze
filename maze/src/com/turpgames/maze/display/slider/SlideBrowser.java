@@ -1,4 +1,4 @@
-package com.turpgames.maze.display;
+package com.turpgames.maze.display.slider;
 
 import java.util.ArrayList;
 import java.util.List;

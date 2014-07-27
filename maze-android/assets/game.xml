@@ -76,9 +76,27 @@
         <screen
             id="splash"
             class="com.turpgames.maze.view.SplashScreen" />
+         <screen
+            id="levels"
+            background-texture="bg"
+            class="com.turpgames.maze.view.LevelSelectionScreen" />
         <screen
             id="game"
             class="com.turpgames.maze.view.GameScreen" />
+        <screen
+            id="result"
+            background-texture="bg"
+            class="com.turpgames.maze.view.ResultScreen" />
+        <screen
+            id="menu"
+            background-texture="bg"
+            class="com.turpgames.maze.view.MenuScreen" />
+        <screen
+            id="about"
+            background-texture="bg"
+            class="com.turpgames.maze.view.AboutScreen" />
+        
+        
         <screen
             id="slider-test"
             class="com.turpgames.maze.view.SliderTestScreen" />
@@ -92,7 +110,21 @@
     </screens>
     
     <forms>
-        
+
+        <form id="mainForm" >
+
+            <button
+                id="btnPlay"
+                action="screen=levels"
+                text="Play"
+                y="18" />
+
+            <button
+                id="btnAbout"
+                action="screen=about"
+                resource-text="About"
+                y="14" />
+        </form>
     </forms>
     
     <animations>
@@ -163,6 +195,10 @@
                 path="img/toolbar/back.png" />
 
             <texture
+                id="tb_reset"
+                path="img/toolbar/reset.png" />
+            
+            <texture
                 id="tb_sound_off"
                 path="img/toolbar/sound-off.png" />
 
@@ -170,6 +206,41 @@
                 id="tb_sound_on"
                 path="img/toolbar/sound-on.png" />
             
+            <texture
+                id="level_item"
+                path="img/level_item.png" />
+
+            <texture
+                id="locked"
+                path="img/lock_locked.png" />
+
+            <texture
+                id="unlocked"
+                path="img/lock_unlocked.png" />
+
+            <texture
+                id="star_empty"
+                path="img/star_empty.png" />
+
+            <texture
+                id="star_half"
+                path="img/star_half_left.png" />
+
+            <texture
+                id="star_full"
+                path="img/star_full.png" />
+
+            <texture
+                id="button_green"
+                path="img/button_green.png" />
+
+            <texture
+                id="button_blue"
+                path="img/button_blue.png" />
+
+            <texture
+                id="info"
+                path="img/info.png" />
             
             <texture
                 id="fell_on_trap"
@@ -209,6 +280,9 @@
                 id="rotationSignRight"
                 path="img/game/right.png" />
 
+            <texture
+                id="bg"
+                path="img/bg.png" />
         </textures>
 
         <sounds>

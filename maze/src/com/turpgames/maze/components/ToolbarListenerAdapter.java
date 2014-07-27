@@ -10,4 +10,9 @@ public class ToolbarListenerAdapter implements IToolbarListener {
 	public void onResetGame() {
 		
 	}
+	
+	@Override
+	public void onShowDescription() {
+		
+	}
 }

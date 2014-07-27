@@ -1,4 +1,4 @@
-package com.turpgames.maze.model.blocks;
+package com.turpgames.maze.model;
 
 import com.turpgames.box2d.Box2D;
 import com.turpgames.box2d.IBody;
