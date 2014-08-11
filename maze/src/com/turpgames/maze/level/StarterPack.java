@@ -36,6 +36,8 @@ public class StarterPack {
 	private static LevelMeta level1() {
 		return newBuilder(1)
 				.setScoreMeta(0, 0, 0)
+				.setLokumX(1)
+				.setLokumY(2)
 				.addBlocks(new int[][] { 
 				{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 				{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 1 }, 

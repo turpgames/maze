@@ -24,6 +24,8 @@ public class LevelMeta {
 	private final int star2;
 	private final int star3;
 	private final String description;
+	private final float lokumX;
+	private final float lokumY;
 
 	private LevelPack pack;
 	
@@ -36,6 +38,8 @@ public class LevelMeta {
 		this.blocks = builder.blocks.toArray(new BlockMeta[0]);
 		this.contactListener = builder.contactListener;
 		this.description = builder.description;
+		this.lokumX = builder.lokumX;
+		this.lokumY = builder.lokumY;
 	}
 
 	public LevelPack getPack() {
@@ -102,7 +106,17 @@ public class LevelMeta {
 		return new Builder(id);
 	}
 
+	public float getLokumX() {
+		return lokumX;
+	}
+
+	public float getLokumY() {
+		return lokumY;
+	}
+
 	public static class Builder {
+		private float lokumY;
+		private float lokumX;
 		private final List<BlockMeta> blocks;
 		private final String id;
 		private int index;
@@ -162,6 +176,16 @@ public class LevelMeta {
 			return this;
 		}
 
+		public Builder setLokumX(int xIndex) {
+			this.lokumX = 120;
+			return this;
+		}
+		
+		public Builder setLokumY(int yIndex) {
+			this.lokumY = 370;
+			return this;
+		}
+		
 		public LevelMeta build() {
 			return new LevelMeta(this);
 		}

@@ -57,6 +57,13 @@ public class GameController implements ILevelListener {
 				resetGame();
 			}
 		});
+		
+//		registerGameDrawable(new IDrawable(){
+//			public void draw(){
+//			world.drawDebug();
+//			}
+//			});
+//		
 	}
 
 	public void activate() {

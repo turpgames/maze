@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.turpgames.box2d.IBody;
+import com.turpgames.box2d.IBox2DObject;
 import com.turpgames.box2d.IShape;
 import com.turpgames.box2d.IWorld;
 import com.turpgames.box2d.builders.Box2DBuilders;
@@ -22,12 +23,13 @@ public class Level implements IDrawable {
 	private static Vector angle = new Vector(0,0,0);
 
 	private final IBody mazeBody;
-//	private final IBody lokumBody;
+	private final IBody lokumBody;
 
 	private Mechanic mechanic;
 	
 	private RotationSign rotationSign;
 	private List<Block> blocks;
+	private Lokum lokum;
 	
 	public Level(LevelMeta levelMeta, IWorld world, IScreenView view) {
 		mazeBody = Box2DBuilders.Body.kinematicBodyBuilder()
@@ -40,7 +42,9 @@ public class Level implements IDrawable {
 		
 		blocks = new ArrayList<Block>();
 		for (BlockMeta blockMeta : levelMeta.getBlocks()) {
-			IShape blockShape = buildBlockShape(blockMeta.getX() - center.x + Maze.BLOCK_WIDTH / 2, blockMeta.getY() - center.y + Maze.BLOCK_HEIGHT / 2);
+			IShape blockShape = Box2DBuilders.Shape.buildBox(
+					blockMeta.getWidth(), blockMeta.getHeight(),
+					blockMeta.getX() - center.x + Maze.BLOCK_WIDTH / 2, blockMeta.getY() - center.y + Maze.BLOCK_HEIGHT / 2);
 
 			Box2DBuilders.Fixture.fixtureBuilder()
 					.setDensity(5f)
@@ -56,26 +60,25 @@ public class Level implements IDrawable {
 		
 		mechanic = new Mechanic(this, view);
 
-//		lokumBody = Box2DBuilders.Body.dynamicBodyBuilder()
-//				.setCenter(center.x, center.y)
-//				.setAngularDamping(1)
-//				.build(world);
-//
-//		IShape lokumShape = buildBlockShape(0, 0);
-//
-//		IFixture lokumFixture = Box2DBuilders.Fixture.fixtureBuilder()
-//				.setDensity(5f)
-//				.setElasticity(0f)
-//				.setFriction(0f)
-//				.setShape(lokumShape)
-//				.build(lokumBody);
-//
-//		lokumShape.dispose();
-	}
+		lokumBody = Box2DBuilders.Body.dynamicBodyBuilder()
+				.setCenter(center.x, center.y)
+				.setAngularDamping(1)
+				.build(world);
 
-	private IShape buildBlockShape(float x, float y) {
-		return Box2DBuilders.Shape.buildBox(Maze.BLOCK_WIDTH, Maze.BLOCK_HEIGHT, x, y);
-		// return Box2DBuilders.Shape.buildCircle(blockSize / 2, x, y);
+		IShape lokumShape = Box2DBuilders.Shape.buildBox(
+				Maze.BLOCK_WIDTH, Maze.BLOCK_HEIGHT,
+				levelMeta.getLokumX() - center.x + Maze.BLOCK_WIDTH / 2, levelMeta.getLokumY() - center.y + Maze.BLOCK_HEIGHT / 2);
+
+		Box2DBuilders.Fixture.fixtureBuilder()
+				.setDensity(5f)
+				.setElasticity(0f)
+				.setFriction(0f)
+				.setShape(lokumShape)
+				.build(lokumBody);
+
+		lokumShape.dispose();
+		
+		lokum = new Lokum(lokumBody, levelMeta.getLokumX(), levelMeta.getLokumY());
 	}
 
 	public void activate() {
@@ -96,6 +99,31 @@ public class Level implements IDrawable {
 			block.draw();
 		// ShapeDrawer.drawRect(IDrawingInfo.viewport, false);
 		rotationSign.draw();
+		lokum.draw();
+	}
+
+	public float getRotationAngle() {
+		return angle.z;
+	}
+
+	public void setBodyRotation(float rotation) {
+		lokumBody.setTransform(center.x, center.y, rotation);
+		lokum.syncWithObject();
+		
+		mazeBody.setTransform(center.x, center.y, rotation);
+		angle.z = rotation;
+	}
+
+	public void addBodyRotation(float rotation) {
+		angle.z += rotation;
+		mazeBody.setTransform(center.x, center.y, angle.z);
+		
+		lokumBody.setTransform(center.x, center.y, angle.z);
+		lokum.syncWithObject();
+	}
+	
+	public void setSignRotation(int rotation) {
+		rotationSign.direction = rotation;
 	}
 	
 	public class Block extends GameObject {
@@ -120,22 +148,52 @@ public class Level implements IDrawable {
 //			ShapeDrawer.drawRect(this, false);
 		}
 	}
-
-	public float getRotationAngle() {
-		return angle.z;
-	}
-
-	public void setBodyRotation(float rotation) {
-		mazeBody.setTransform(center.x, center.y, rotation);
-		angle.z = rotation;
-	}
-
-	public void addBodyRotation(float rotation) {
-		angle.z += rotation;
-		mazeBody.setTransform(center.x, center.y, angle.z);
-	}
 	
-	public void setSignRotation(int rotation) {
-		rotationSign.direction = rotation;
+	public class Lokum extends GameObject implements IBox2DObject {
+		private IBody body;
+		public Lokum(IBody lokumBody, float x, float y) {
+			body = lokumBody;
+			body.setData(this);
+			setWidth(Maze.BLOCK_WIDTH);
+			setHeight(Maze.BLOCK_HEIGHT);
+			getLocation().set(x, y);
+			
+			getRotation().angle = new Vector(0,0,0);
+			getRotation().origin = center;
+			
+			syncWithObject();
+		}
+
+		@Override
+		public void draw() {
+			Maze.drawLokum(this);
+//			ShapeDrawer.drawRect(this, false);
+		}
+		@Override
+		public void syncWithBody() {
+			Vector bodyCenter = body.getCenter();
+			float bodyRotation = body.getRotation();
+
+			this.getLocation().set(
+					bodyCenter.x,
+					bodyCenter.y);
+
+			this.getRotation().angle.z = bodyRotation;
+		}
+
+		@Override
+		public void syncWithObject() {
+			body.setTransform(center.x, center.y, this.getRotation().angle.z);
+		}
+
+		@Override
+		public GameObject getObject() {
+			return this;
+		}
+
+		@Override
+		public IBody getBody() {
+			return body;
+		}
 	}
 }

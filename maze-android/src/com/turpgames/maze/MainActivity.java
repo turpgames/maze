@@ -1,4 +1,4 @@
-package com.turpgames;
+package com.turpgames.maze;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.turpgames.framework.v0.android.AndroidGameActivity;
