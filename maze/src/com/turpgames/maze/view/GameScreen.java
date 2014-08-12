@@ -5,15 +5,16 @@ import com.turpgames.framework.v0.impl.ScreenManager;
 import com.turpgames.maze.components.Toolbar;
 import com.turpgames.maze.components.ToolbarListenerAdapter;
 import com.turpgames.maze.controller.GameController;
+import com.turpgames.maze.controller.GameController2;
 import com.turpgames.maze.utils.R;
 
 public class GameScreen extends Screen implements IScreenView {
 
-	private GameController controller;
+	private GameController2 controller;
 
 	public void init() {
 		super.init();
-		controller = new GameController(this);
+		controller = new GameController2(this);
 		controller.activate();
 	}
 

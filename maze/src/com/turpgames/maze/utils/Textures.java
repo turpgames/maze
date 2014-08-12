@@ -19,6 +19,9 @@ public class Textures
 	public static final ITexture button_green = Game.getResourceManager().getTexture("button_green");
 	public static final ITexture button_blue = Game.getResourceManager().getTexture("button_blue");
 	public static final ITexture info = Game.getResourceManager().getTexture("info");
+
+	public final static ITexture wall = Game.getResourceManager().getTexture(R.game.textures.wall);
+	public final static ITexture lokum = Game.getResourceManager().getTexture(R.game.textures.lokum);
 	
 	private final static Map<Integer, ITexture> stars = new HashMap<Integer, ITexture>();
 	
